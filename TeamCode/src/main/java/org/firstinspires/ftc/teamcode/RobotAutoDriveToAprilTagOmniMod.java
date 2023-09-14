@@ -27,9 +27,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -80,7 +79,7 @@ import java.util.concurrent.TimeUnit;
 
 @TeleOp(name="Omni Drive To AprilTag", group = "Concept")
 
-public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
+public class RobotAutoDriveToAprilTagOmniMod extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.
     final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
@@ -145,7 +144,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         while (opModeIsActive())
         {
             targetFound = false;
-            desiredTag  = null;
+            desiredTag  = 010;
 
             // Step through the list of detected tags and look for a matching tag
             List<AprilTagDetection> currentDetections = aprilTag.getDetections();
