@@ -101,7 +101,7 @@ public class RobotAutoDriveToAprilTagOmniMod extends LinearOpMode
     private DcMotor rightBackDrive   = null;  //  Used to control the right back drive wheel
 
     private static final boolean USE_WEBCAM = false;  // Set true to use a webcam, or false for a phone camera
-    private static final int DESIRED_TAG_ID = 0;     // Choose the tag you want to approach or set to -1 for ANY tag.
+    private static final int DESIRED_TAG_ID = 10;     // Choose the tag you want to approach or set to -1 for ANY tag.
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
@@ -144,16 +144,19 @@ public class RobotAutoDriveToAprilTagOmniMod extends LinearOpMode
         while (opModeIsActive())
         {
             targetFound = false;
-            desiredTag  = 010;
+            desiredTag  = null;
 
             // Step through the list of detected tags and look for a matching tag
             List<AprilTagDetection> currentDetections = aprilTag.getDetections();
             for (AprilTagDetection detection : currentDetections) {
-                if ((detection.metadata != null) &&
-                    ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID))  ){
-                    targetFound = true;
-                    desiredTag = detection;
-                    break;  // don't look any further.
+                if (detection.metadata != null) {
+                    if((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
+                        targetFound = true;
+                        desiredTag = detection;
+                        break;  // don't look any further.
+                    }else{
+                        telemetry.addData("debug",detection.id);
+                    }
                 } else {
                     telemetry.addData("Unknown Target", "Tag ID %d is not in TagLibrary\n", detection.id);
                 }
@@ -240,7 +243,7 @@ public class RobotAutoDriveToAprilTagOmniMod extends LinearOpMode
      */
     private void initAprilTag() {
         // Create the AprilTag processor by using a builder.
-        aprilTag = new AprilTagProcessor.Builder().build();
+        aprilTag = AprilTagProcessor.easyCreateWithDefaults();
 
         // Create the vision portal by using a builder.
         if (USE_WEBCAM) {
