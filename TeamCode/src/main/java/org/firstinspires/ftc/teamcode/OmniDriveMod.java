@@ -115,6 +115,7 @@ public class OmniDriveMod extends LinearOpMode {
     private double LBPower;
     private double RFPower;
     private double RBPower;
+    private double max;
 
     public void setAllSpeed(double lf, double lb, double rf, double rb){
         leftFrontDrive.setPower(lf);
@@ -173,6 +174,18 @@ public class OmniDriveMod extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
     }
+    public void MaxSet(){
+        max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+        max = Math.max(max, Math.abs(leftBackPower));
+        max = Math.max(max, Math.abs(rightBackPower));
+
+        if (max > 1.0) {
+            leftFrontPower  /= max;
+            rightFrontPower /= max;
+            leftBackPower   /= max;
+            rightBackPower  /= max;
+        }
+    }
     public void runOpMode() {
 
         // Initialize the hardware variables. Note that the strings used here must correspond
@@ -203,7 +216,6 @@ public class OmniDriveMod extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            double max;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
 
@@ -213,16 +225,7 @@ public class OmniDriveMod extends LinearOpMode {
 
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
-            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-            max = Math.max(max, Math.abs(leftBackPower));
-            max = Math.max(max, Math.abs(rightBackPower));
-
-            if (max > 1.0) {
-                leftFrontPower  /= max;
-                rightFrontPower /= max;
-                leftBackPower   /= max;
-                rightBackPower  /= max;
-            }
+            MaxSet();
 
             // This is test code:
             //
