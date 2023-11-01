@@ -112,10 +112,10 @@ public class OmniDriveMod extends LinearOpMode {
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "LF");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "LB");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "RF");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "RB");
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "FL");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "BL");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
 
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
