@@ -28,6 +28,7 @@
  */
 
 package org.firstinspires.ftc.teamcode;
+import org.firstinspires.ftc.teamcode.MotorMethods;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -104,88 +105,9 @@ public class OmniDriveMod extends LinearOpMode {
     private DcMotor leftBackDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
-    private double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-    private double lateral =  gamepad1.left_stick_x;
-    private double yaw     =  gamepad1.right_stick_x;
-    private double leftFrontPower  = axial + lateral + yaw;
-    private double rightFrontPower = axial - lateral - yaw;
-    private double leftBackPower   = axial - lateral + yaw;
-    private double rightBackPower  = axial + lateral - yaw;
-    private double LFPower;
-    private double LBPower;
-    private double RFPower;
-    private double RBPower;
-    private double max;
+    MotorMethods MethodObj = new MotorMethods();
 
-    public void setAllSpeed(double lf, double lb, double rf, double rb){
-        leftFrontDrive.setPower(lf);
-        rightFrontDrive.setPower(rf);
-        leftBackDrive.setPower(lb);
-        rightBackDrive.setPower(rb);
-    }
-    public void setAllDirec(double a, double l, double y){
-        axial = a;
-        lateral = l;
-        yaw = y;
-    }
-    public void MotorStop(){
-        leftFrontDrive.setPower(0);
-        rightFrontDrive.setPower(0);
-        leftBackDrive.setPower(0);
-        rightBackDrive.setPower(0);
-    }
-    public void MotorStall(){
-        LFPower = leftFrontPower;
-        LBPower = leftBackPower;
-        RFPower = rightFrontPower;
-        RBPower = rightBackPower;
-        leftFrontDrive.setPower(0);
-        rightFrontDrive.setPower(0);
-        leftBackDrive.setPower(0);
-        rightBackDrive.setPower(0);
-    }
-    public void MotorResume(){
-        leftFrontDrive.setPower(LFPower);
-        rightFrontDrive.setPower(RFPower);
-        leftBackDrive.setPower(LBPower);
-        rightBackDrive.setPower(RBPower);
-    }
-    public void MotorSetPower(){
-        leftFrontDrive.setPower(leftFrontPower);
-        rightFrontDrive.setPower(rightFrontPower);
-        leftBackDrive.setPower(leftBackPower);
-        rightBackDrive.setPower(rightBackPower);
-    }
-    public void CalcPower(){
-        leftFrontPower  = axial + lateral + yaw;
-        rightFrontPower = axial - lateral - yaw;
-        leftBackPower   = axial - lateral + yaw;
-        rightBackPower  = axial + lateral - yaw;
-    }
-    public void SetDirectionForward(){
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-    }
-    public void SetDirectionBackwards(){
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
-    }
-    public void MaxSet(){
-        max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-        max = Math.max(max, Math.abs(leftBackPower));
-        max = Math.max(max, Math.abs(rightBackPower));
-
-        if (max > 1.0) {
-            leftFrontPower  /= max;
-            rightFrontPower /= max;
-            leftBackPower   /= max;
-            rightBackPower  /= max;
-        }
-    }
+    @Override
     public void runOpMode() {
 
         // Initialize the hardware variables. Note that the strings used here must correspond
@@ -205,7 +127,7 @@ public class OmniDriveMod extends LinearOpMode {
         // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.
         // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
-        SetDirectionForward();
+        MethodObj.SetDirectionForward();
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -216,16 +138,32 @@ public class OmniDriveMod extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            double max;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-
+            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral =  gamepad1.left_stick_x;
+            double yaw     =  gamepad1.right_stick_x;
+            //MethodObj.setAllDirec(axial,lateral,yaw);
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            CalcPower();
-
+            //MethodObj.CalcPower();
+            double leftFrontPower = MethodObj.ReturnLF();
+            double leftBackPower = MethodObj.ReturnLB();
+            double rightFrontPower = MethodObj.ReturnRF();
+            double rightBackPower = MethodObj.ReturnRB();
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
-            MaxSet();
+            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+            max = Math.max(max, Math.abs(leftBackPower));
+            max = Math.max(max, Math.abs(rightBackPower));
+
+            if (max > 1.0) {
+                leftFrontPower  /= max;
+                rightFrontPower /= max;
+                leftBackPower   /= max;
+                rightBackPower  /= max;
+            }
 
             // This is test code:
             //
@@ -245,14 +183,15 @@ public class OmniDriveMod extends LinearOpMode {
             */
 
             // Send calculated power to wheels
-            MotorSetPower();
-
+            //MethodObj.MotorSetPower();
+            MethodObj.Turn(1.0);
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
             telemetry.update();
         }
-    }}
+    }
+}
 
 
