@@ -96,7 +96,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Omni Linear OpMode", group="Linear OpMode")
+@TeleOp(name="Basic: Omni Linear OpMode Modified", group="Linear OpMode")
 public class OmniDriveMod extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
