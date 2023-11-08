@@ -24,7 +24,6 @@ public class MotorMethods extends LinearOpMode {
     private double LBPower;
     private double RFPower;
     private double RBPower;
-    private double max;
     public MotorMethods(){
     }
     @Override
