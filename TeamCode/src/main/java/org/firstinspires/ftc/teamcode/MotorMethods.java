@@ -16,17 +16,7 @@ public class MotorMethods extends LinearOpMode {
     private double lateral;
     private double yaw;
 
-    public double LeftFrontPower
-    {
-        get
-        {
-            leftFrontDrive.getPower();
-        }
-        set
-        {
-            leftFrontDrive.setPower(value);
-        }
-    }
+    public double leftFrontPower;
     private double rightFrontPower;
     private double leftBackPower;
     private double rightBackPower;
@@ -51,6 +41,12 @@ public class MotorMethods extends LinearOpMode {
         setAllDirec(0,0,y);
         CalcPower();
         MotorSetPower();
+    }
+    public void MotorSetPower(){
+        leftFrontDrive.setPower(leftFrontPower);
+        rightFrontDrive.setPower(rightFrontPower);
+        leftBackDrive.setPower(leftBackPower);
+        rightBackDrive.setPower(rightBackPower);
     }
     public void setAllSpeed(double lf, double lb, double rf, double rb){
         leftFrontDrive.setPower(lf);
