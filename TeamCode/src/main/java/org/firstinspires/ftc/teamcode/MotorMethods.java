@@ -1,17 +1,32 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-public class MotorMethods {
-    private DcMotor leftFrontDrive;
-    private DcMotor leftBackDrive;
-    private DcMotor rightFrontDrive;
-    private DcMotor rightBackDrive;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+
+public class MotorMethods extends LinearOpMode {
+    private DcMotor leftFrontDrive = null;
+    private DcMotor leftBackDrive = null;
+    private DcMotor rightFrontDrive = null;
+    private DcMotor rightBackDrive = null;
     private double axial;
     private double lateral;
     private double yaw;
-    private double leftFrontPower;
+
+    public double LeftFrontPower
+    {
+        get
+        {
+            leftFrontDrive.getPower();
+        }
+        set
+        {
+            leftFrontDrive.setPower(value);
+        }
+    }
     private double rightFrontPower;
     private double leftBackPower;
     private double rightBackPower;
@@ -20,7 +35,18 @@ public class MotorMethods {
     private double RFPower;
     private double RBPower;
     private double max;
-    public MotorMethods(){}
+    public MotorMethods(){
+    }
+    @Override
+    public void runOpMode() {
+
+        // Initialize the hardware variables. Note that the strings used here must correspond
+        // to the names assigned during the robot configuration step on the DS or RC devices.
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "FL");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "BL");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
+    }
     public void Turn(double y){
         setAllDirec(0,0,y);
         CalcPower();
@@ -43,6 +69,11 @@ public class MotorMethods {
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
     }
+
+    public void SavePowerLevels()
+    {
+        LFPower = leftFrontDrive.getPower();
+    }
     public void MotorStall(){
         LFPower = leftFrontPower;
         LBPower = leftBackPower;
@@ -58,12 +89,6 @@ public class MotorMethods {
         rightFrontDrive.setPower(RFPower);
         leftBackDrive.setPower(LBPower);
         rightBackDrive.setPower(RBPower);
-    }
-    public void MotorSetPower(){
-        leftFrontDrive.setPower(leftFrontPower);
-        rightFrontDrive.setPower(rightFrontPower);
-        leftBackDrive.setPower(leftBackPower);
-        rightBackDrive.setPower(rightBackPower);
     }
     public void CalcPower(){
         leftFrontPower  = axial + lateral + yaw;
