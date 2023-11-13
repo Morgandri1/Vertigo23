@@ -101,10 +101,6 @@ public class OmniDriveMod extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFrontDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor rightBackDrive = null;
     MotorMethods MethodObj = new MotorMethods();
 
     @Override
@@ -112,11 +108,6 @@ public class OmniDriveMod extends LinearOpMode {
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "FL");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "BL");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
-
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
         // ########################################################################################
@@ -127,10 +118,7 @@ public class OmniDriveMod extends LinearOpMode {
         // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.
         // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        MethodObj.SetDirectionForward();
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -187,7 +175,7 @@ public class OmniDriveMod extends LinearOpMode {
 
             // Send calculated power to wheels
             //MethodObj.MotorSetPower();
-            MethodObj.Turn(1.0);
+            MethodObj.Turn(0.0,0.0,1.0);
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
