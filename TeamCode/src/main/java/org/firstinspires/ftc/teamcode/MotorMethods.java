@@ -45,11 +45,6 @@ public class MotorMethods extends LinearOpMode {
         leftBackDrive.setPower(lb);
         rightBackDrive.setPower(rb);
     }
-    public void setAllDirec(double a, double l, double y){
-        axial = a;
-        lateral = l;
-        yaw = y;
-    }
     public void MotorStop(){
         leftFrontDrive.setPower(0);
         rightFrontDrive.setPower(0);
