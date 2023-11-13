@@ -25,6 +25,7 @@ public class MotorMethods extends LinearOpMode {
     private double RFPower;
     private double RBPower;
     public MotorMethods(){
+        runOpMode();
     }
     @Override
     public void runOpMode() {
@@ -35,6 +36,7 @@ public class MotorMethods extends LinearOpMode {
         leftBackDrive = hardwareMap.get(DcMotor.class, "BL");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
+
     }
     public void Turn(double y){
         setAllDirec(0,0,y);
