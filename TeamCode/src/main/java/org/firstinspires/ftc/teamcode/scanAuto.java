@@ -106,25 +106,29 @@ public class scanAuto extends LinearOpMode {
         runtime.reset();
 
         //change turntime to calibrate
-        double turnTime1=1000;
-        double turnTime2=1000;
-        double turnTime3=1000;
+        double turnTime1=150;
+        double turnTime2=150;
+        double turnTime3=150;
         for(double time=runtime.milliseconds();runtime.milliseconds()<time+turnTime1;){
             MethodObj.move(0,0,-0.5);
         }
+        MethodObj.move(0,0,0);
+        sleep(2000);
         for(double time=runtime.milliseconds();runtime.milliseconds()<time+turnTime2;){
 
 
 
             MethodObj.move(0,0,0.5);
         }
+        MethodObj.move(0,0,0);
+        sleep(2000);
         for(double time=runtime.milliseconds();runtime.milliseconds()<time+turnTime3;){
 
 
 
-            MethodObj.move(0,0,-0.5);
+            MethodObj.move(0,0,0.5);
         }
-        
+        MethodObj.move(0,0,0);
 
 
             /*
