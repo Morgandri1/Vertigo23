@@ -101,13 +101,22 @@ public class OmniDriveMod extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
-    MotorMethods MethodObj = new MotorMethods();
+    DcMotor leftFrontDrive = null;
+    DcMotor leftBackDrive = null;
+    DcMotor rightFrontDrive = null;
+    DcMotor rightBackDrive = null;
 
     @Override
     public void runOpMode() {
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "FL");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "BL");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
+        MotorMethods MethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
+
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
         // ########################################################################################
@@ -118,7 +127,7 @@ public class OmniDriveMod extends LinearOpMode {
         // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.
         // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
-        MethodObj.SetDirectionForward();
+        //MethodObj.SetDirectionForward();
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -135,10 +144,11 @@ public class OmniDriveMod extends LinearOpMode {
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral =  gamepad1.left_stick_x;
             double yaw     =  gamepad1.right_stick_x;
-            //MethodObj.setAllDirec(axial,lateral,yaw);
+            MethodObj.move(axial,lateral,yaw);
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
             //MethodObj.CalcPower();
+
             double leftFrontPower = MethodObj.ReturnLF();
             double leftBackPower = MethodObj.ReturnLB();
             double rightFrontPower = MethodObj.ReturnRF();
@@ -175,7 +185,7 @@ public class OmniDriveMod extends LinearOpMode {
 
             // Send calculated power to wheels
             //MethodObj.MotorSetPower();
-            MethodObj.Turn(0.0,0.0,1.0);
+            //MethodObj.Turn(0.0,0.0,1.0);
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);

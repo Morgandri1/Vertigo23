@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-public class MotorMethods extends LinearOpMode {
+class MotorMethods {
     private DcMotor leftFrontDrive;
     private DcMotor leftBackDrive;
     private DcMotor rightFrontDrive;
@@ -19,9 +19,16 @@ public class MotorMethods extends LinearOpMode {
     private double RBPower;
     private double LFPower;
     private double LBPower;
-    public MotorMethods(){
-        runOpMode();
+    public MotorMethods(DcMotor leftFront, DcMotor rightFront,DcMotor leftBack,DcMotor rightBack){
+leftFrontDrive=leftFront;
+rightFrontDrive=rightFront;
+leftBackDrive=leftBack;
+rightBackDrive=rightBack;
+
     }
+
+    
+    /*
     @Override
     public void runOpMode() {
 
@@ -33,7 +40,8 @@ public class MotorMethods extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
 
     }
-    public void Turn(double axial, double lateral, double yaw){
+     */
+    public void move(double axial, double lateral, double yaw){
         leftFrontDrive.setPower(axial + lateral + yaw);
         leftBackDrive.setPower(axial - lateral + yaw);
         rightFrontDrive.setPower(axial - lateral - yaw);
