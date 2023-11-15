@@ -35,6 +35,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.lang.reflect.Method;
+
 /*
  * This file contains an example of a Linear "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -83,7 +85,7 @@ public class scanAuto extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
         MotorMethods MethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
-
+        MethodObj.SetDirectionForward();
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
         // ########################################################################################
@@ -108,10 +110,7 @@ public class scanAuto extends LinearOpMode {
         double turnTime2=1000;
         double turnTime3=1000;
         for(double time=runtime.milliseconds();runtime.milliseconds()<time+turnTime1;){
-
-
-
-            MethodObj.move(0,0,0.5);
+            MethodObj.move(0,0,-0.5);
         }
         for(double time=runtime.milliseconds();runtime.milliseconds()<time+turnTime2;){
 
@@ -123,7 +122,7 @@ public class scanAuto extends LinearOpMode {
 
 
 
-            MethodObj.move(0,0,0.5);
+            MethodObj.move(0,0,-0.5);
         }
         
 
