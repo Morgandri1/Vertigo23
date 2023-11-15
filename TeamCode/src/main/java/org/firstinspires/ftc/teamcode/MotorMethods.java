@@ -20,10 +20,10 @@ class MotorMethods {
     private double LFPower;
     private double LBPower;
     public MotorMethods(DcMotor leftFront, DcMotor rightFront,DcMotor leftBack,DcMotor rightBack){
-leftFrontDrive=leftFront;
-rightFrontDrive=rightFront;
-leftBackDrive=leftBack;
-rightBackDrive=rightBack;
+        leftFrontDrive = leftFront;
+        leftBackDrive = leftBack;
+        rightFrontDrive = rightFront;
+        rightBackDrive = rightBack;
 
     }
 
@@ -73,6 +73,10 @@ rightBackDrive=rightBack;
         leftBackDrive.setPower(lb);
         rightBackDrive.setPower(rb);
     }
+    public void BLTest(){leftBackDrive.setPower(1);}
+    public void FLTest(){leftFrontDrive.setPower(1);}
+    public void BRTest(){rightBackDrive.setPower(1);}
+    public void FRTest(){rightFrontDrive.setPower(1);}
     public void MotorStop(){
         leftFrontDrive.setPower(0);
         rightFrontDrive.setPower(0);
