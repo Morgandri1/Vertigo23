@@ -42,10 +42,30 @@ rightBackDrive=rightBack;
     }
      */
     public void move(double axial, double lateral, double yaw){
-        leftFrontDrive.setPower(axial + lateral + yaw);
-        leftBackDrive.setPower(axial - lateral + yaw);
-        rightFrontDrive.setPower(axial - lateral - yaw);
-        rightBackDrive.setPower(axial + lateral - yaw);
+        double max;
+        double leftFrontPower  = axial + lateral + yaw;
+        double rightFrontPower = axial - lateral - yaw;
+        double leftBackPower   = axial - lateral + yaw;
+        double rightBackPower  = axial + lateral - yaw;
+
+        // Normalize the values so no wheel power exceeds 100%
+        // This ensures that the robot maintains the desired motion.
+        max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+        max = Math.max(max, Math.abs(leftBackPower));
+        max = Math.max(max, Math.abs(rightBackPower));
+
+        if (max > 1.0) {
+            leftFrontPower  /= max;
+            rightFrontPower /= max;
+            leftBackPower   /= max;
+            rightBackPower  /= max;
+        }
+
+
+        leftFrontDrive.setPower(leftFrontPower);
+        leftBackDrive.setPower(leftBackPower);
+        rightFrontDrive.setPower(rightFrontPower);
+        rightBackDrive.setPower(rightBackPower);
     }
     public void setAllSpeed(double lf, double lb, double rf, double rb){
         leftFrontDrive.setPower(lf);
