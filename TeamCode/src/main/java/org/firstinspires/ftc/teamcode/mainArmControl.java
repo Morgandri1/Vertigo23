@@ -97,7 +97,8 @@ public class mainArmControl extends LinearOpMode {
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
     DcMotor armMotor = null;
-    Servo armServo;
+    Servo armServo1;
+    Servo armServo2;
     @Override
     public void runOpMode() {
 
@@ -106,7 +107,8 @@ public class mainArmControl extends LinearOpMode {
 
         //Remember to set the device name here to the name on the control hub
         armMotor  = hardwareMap.get(DcMotor.class, "AM1");
-        armServo = hardwareMap.get(Servo.class, "AS1");
+        armServo1 = hardwareMap.get(Servo.class, "AS1");
+        armServo2 = hardwareMap.get(Servo.class, "AS2");
         armMotor.setDirection(DcMotor.Direction.FORWARD);
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -122,6 +124,7 @@ public class mainArmControl extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
+        telemetry.addData("Arm Motor Position: ", armMotor.getCurrentPosition());
         telemetry.update();
 
         waitForStart();
@@ -129,21 +132,27 @@ public class mainArmControl extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         double servoSpeed = 0.05;
-        int motorSpeed = 18;
         while (opModeIsActive()) {
-            int motorPos = armMotor.getCurrentPosition();
-            double servoPos = armServo.getPosition();
-            if (gamepad2.dpad_up) {
-                if (motorPos + motorSpeed <= 270){
-                    motorPos += motorSpeed;
-                }
+            double servoPos1 = armServo1.getPosition();
+            double power;
+            if ((double)gamepad2.left_stick_y > 1.0){
+                power = 1.0;
             }
-            else if (gamepad2.dpad_down){
-                if (motorPos - motorSpeed >= 30){
-                    motorPos -= motorSpeed;
-                }
+            else if ((double)gamepad2.left_stick_y < -1.0){
+                power = -1.0;
             }
-            armServo.setPosition(motorPos);
+            else{
+                power = (double)gamepad2.left_stick_y;
+            }
+            if (gamepad2.back) {
+                power = 0.0;
+                armMotor.setTargetPosition(30);
+            }
+            if (gamepad2.start){
+                power = 0.0;
+                armMotor.setTargetPosition(270);
+            }
+            armMotor.setPower(power);
         }
     }
 }
