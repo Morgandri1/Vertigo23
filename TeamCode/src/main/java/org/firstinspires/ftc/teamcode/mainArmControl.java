@@ -106,9 +106,9 @@ public class mainArmControl extends LinearOpMode {
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
         //Remember to set the device name here to the name on the control hub
-        armMotor  = hardwareMap.get(DcMotor.class, "AM1");
-        armServo1 = hardwareMap.get(Servo.class, "AS1");
-        armServo2 = hardwareMap.get(Servo.class, "AS2");
+        armMotor  = hardwareMap.get(DcMotor.class, "am1");
+        //armServo1 = hardwareMap.get(Servo.class, "AS1");
+        //armServo2 = hardwareMap.get(Servo.class, "AS2");
         armMotor.setDirection(DcMotor.Direction.FORWARD);
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -131,18 +131,19 @@ public class mainArmControl extends LinearOpMode {
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        double servoSpeed = 0.05;
+        //double servoSpeed = 0.05;
+        int motorSpeed = 4;
         while (opModeIsActive()) {
-            double servoPos1 = armServo1.getPosition();
+            //double servoPos1 = armServo1.getPosition();
             double power;
             if ((double)gamepad2.left_stick_y > 1.0){
-                power = 1.0;
+                power = 1.0/motorSpeed;
             }
             else if ((double)gamepad2.left_stick_y < -1.0){
-                power = -1.0;
+                power = -1.0/motorSpeed;
             }
             else{
-                power = (double)gamepad2.left_stick_y;
+                power = (double)gamepad2.left_stick_y/motorSpeed;
             }
             if (gamepad2.back) {
                 power = 0.0;
