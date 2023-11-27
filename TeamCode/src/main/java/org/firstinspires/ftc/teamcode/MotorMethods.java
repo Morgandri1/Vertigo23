@@ -117,4 +117,11 @@ class MotorMethods {
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
     }
+    public void setZeroBehaviorAll(DcMotor.ZeroPowerBehavior thing){
+        leftFrontDrive.setZeroPowerBehavior(thing);
+        leftBackDrive.setZeroPowerBehavior(thing);
+        rightFrontDrive.setZeroPowerBehavior(thing);
+        rightBackDrive.setZeroPowerBehavior(thing);
+
+    }
 }

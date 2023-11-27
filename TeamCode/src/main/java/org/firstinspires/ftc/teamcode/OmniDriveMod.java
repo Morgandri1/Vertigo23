@@ -118,6 +118,8 @@ public class OmniDriveMod extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
         MotorMethods MethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
         MethodObj.SetDirectionForward();
+
+        MethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
         // ########################################################################################
