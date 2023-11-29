@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
@@ -12,6 +13,7 @@ class MotorMethods {
     private DcMotor leftBackDrive;
     private DcMotor rightFrontDrive;
     private DcMotor rightBackDrive;
+    private DcMotor armMotor;
     private double axial;
     private double lateral;
     private double yaw;
@@ -25,6 +27,13 @@ class MotorMethods {
         rightFrontDrive = rightFront;
         rightBackDrive = rightBack;
 
+    }
+    public MotorMethods(DcMotor leftFront, DcMotor rightFront,DcMotor leftBack,DcMotor rightBack, DcMotor arm){
+        leftFrontDrive = leftFront;
+        leftBackDrive = leftBack;
+        rightFrontDrive = rightFront;
+        rightBackDrive = rightBack;
+        armMotor = arm;
     }
 
     
@@ -105,23 +114,40 @@ class MotorMethods {
     public double ReturnRB(){
         return rightBackDrive.getPower();
     }
+    public  double ReturnAM1(){return armMotor.getPower();}
     public void SetDirectionForward(){
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        if (armMotor != null){armMotor.setDirection(DcMotor.Direction.FORWARD);}
     }
     public void SetDirectionBackwards(){
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        if (armMotor != null){armMotor.setDirection(DcMotor.Direction.REVERSE);}
     }
-    public void setZeroBehaviorAll(DcMotor.ZeroPowerBehavior thing){
+    public void setZeroBehaviorAll(DcMotor.ZeroPowerBehavior thing) {
         leftFrontDrive.setZeroPowerBehavior(thing);
         leftBackDrive.setZeroPowerBehavior(thing);
         rightFrontDrive.setZeroPowerBehavior(thing);
         rightBackDrive.setZeroPowerBehavior(thing);
-
+        if (armMotor != null){armMotor.setZeroPowerBehavior(thing);}
+    }
+    public double armMotorMove(float leftStickY, int speedDecrease){
+        double power = 0.0;
+        int motorSpeed = speedDecrease;
+        if ((double)leftStickY > 1.0){
+            power = 1.0/motorSpeed;
+        }
+        else if ((double)leftStickY < -1.0){
+            power = -1.0/motorSpeed;
+        }
+        else{
+            power = (double)leftStickY/motorSpeed;
+        }
+        return power;
     }
 }
