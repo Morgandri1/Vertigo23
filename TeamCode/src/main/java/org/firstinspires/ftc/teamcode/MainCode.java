@@ -150,7 +150,7 @@ public class MainCode extends LinearOpMode {
             double lateral =  gamepad1.left_stick_x;
             double yaw     =  gamepad1.right_stick_x;
             MethodObj.move(axial,lateral,yaw);
-            MethodObj.armMotorMove(gamepad2.left_stick_y, 4);
+            armMotor.setPower(MethodObj.armMotorMove(gamepad2.left_stick_y, 4));
             double leftFrontPower = MethodObj.ReturnLF();
             double leftBackPower = MethodObj.ReturnLB();
             double rightFrontPower = MethodObj.ReturnRF();
