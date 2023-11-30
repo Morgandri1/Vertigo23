@@ -28,16 +28,11 @@
  */
 
 package org.firstinspires.ftc.teamcode;
-import org.firstinspires.ftc.teamcode.MotorMethods;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 /* Copyright (c) 2021 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -66,7 +61,6 @@ import java.util.concurrent.TimeUnit;
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
@@ -117,10 +111,11 @@ public class MainCode extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
         armMotor = hardwareMap.get(DcMotor.class, "am1");
-        MotorMethods MethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive, armMotor);
-        MethodObj.SetDirectionForward();
+        MotorMethods MotorMethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
+        ArmMethods ArmMethodObj = new ArmMethods(armMotor);
+        MotorMethodObj.SetDirectionForward();
 
-        MethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
+        MotorMethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
         // ########################################################################################
@@ -149,12 +144,15 @@ public class MainCode extends LinearOpMode {
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral =  gamepad1.left_stick_x;
             double yaw     =  gamepad1.right_stick_x;
-            MethodObj.move(axial,lateral,yaw);
-            armMotor.setPower(MethodObj.armMotorMove(gamepad2.left_stick_y, 4));
-            double leftFrontPower = MethodObj.ReturnLF();
-            double leftBackPower = MethodObj.ReturnLB();
-            double rightFrontPower = MethodObj.ReturnRF();
-            double rightBackPower = MethodObj.ReturnRB();
+            MotorMethodObj.move(axial,lateral,yaw);
+
+
+            armMotor.setPower(ArmMethodObj.armMotorMove(gamepad2.left_stick_y, 4));
+            
+            double leftFrontPower = MotorMethodObj.ReturnLF();
+            double leftBackPower = MotorMethodObj.ReturnLB();
+            double rightFrontPower = MotorMethodObj.ReturnRF();
+            double rightBackPower = MotorMethodObj.ReturnRB();
             if(gamepad2.a){telemetry.addData("Arm Motor Position: ", armMotor.getCurrentPosition());}
             if(gamepad1.guide||gamepad2.guide){telemetry.addData("Status", "Run Time: " + runtime.toString());}
             if(gamepad1.a){telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);}
