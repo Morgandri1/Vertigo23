@@ -164,7 +164,7 @@ public class MainCode extends LinearOpMode {
 
             //arm movement and initialization
             if(!gamepad2.options){gameToggle=true;}
-
+            //arm initialization
             if(gamepad2.options&&armStage==none){
                 //arm init
                 armMethodObj.setArmDegree(-defaultDegreesFromStart);
@@ -172,14 +172,14 @@ public class MainCode extends LinearOpMode {
                 armStage=active;
                 gameToggle=false;
             }
-
+            //arm toggle
             if (gamepad2.options&&!(armStage==none)&&gameToggle) {
                 if(armStage==active){armStage=idle;}else{armStage=active;}
                 gameToggle=false;
             }
-
+            //determines the angle for the arm based on the controller
             int gamepadArmInput = -(Math.round(gamepad2.right_stick_y)) * armMovementArea;
-
+            //moves the arm and tilts the intake to the correct position
             if (armStage==active) {
                 if (gamepadArmInput >= 0) {
                      armMethodObj.setArmDegree(gamepadArmInput);angleIntake.setPosition(gamepad2.right_stick_y*servoTiltFactor);
@@ -191,7 +191,7 @@ public class MainCode extends LinearOpMode {
                 armMethodObj.setArmDegree(0);
             }
 
-
+            //spins the wheels on the intake
             if(armStage==active){
                 if(gamepad2.right_bumper) {
                     wheelIntake.setPosition(90 * wheelIntakeDirection);
