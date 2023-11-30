@@ -32,6 +32,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+
 
 /* Copyright (c) 2021 FIRST. All rights reserved.
  *
@@ -102,11 +104,18 @@ public class MainCode extends LinearOpMode {
     DcMotor rightBackDrive = null;
     DcMotor armMotor = null;
 
-    boolean arm=false;
-    boolean armInit=false;
+    Servo angleIntake = null;
+    Servo wheelIntake=null;
+
+    int armStage=0;
+    int none=0;
+    int active=1;
+    int idle=2;
     boolean gameToggle=true;
     int defaultDegreesFromStart=220;
     int armMovementArea=90;
+    int servoTiltFactor=-50;
+    int wheelIntakeDirection=1;
     @Override
     public void runOpMode() {
 
@@ -117,8 +126,10 @@ public class MainCode extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
         armMotor = hardwareMap.get(DcMotor.class, "am1");
+        angleIntake = hardwareMap.get(Servo.class,"servoangle");
+        wheelIntake = hardwareMap.get(Servo.class,"servowheel");
         MotorMethods MotorMethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
-        ArmMethods armMethodObj = new ArmMethods(armMotor);
+        ArmMethods armMethodObj = new ArmMethods(armMotor,angleIntake,wheelIntake);
         MotorMethodObj.SetDirectionForward();
 
         MotorMethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -154,26 +165,41 @@ public class MainCode extends LinearOpMode {
             //arm movement and initialization
             if(!gamepad2.options){gameToggle=true;}
 
-            if(gamepad2.options&&!armInit){
+            if(gamepad2.options&&armStage==none){
                 //arm init
                 armMethodObj.setArmDegree(-defaultDegreesFromStart);
                 armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                armInit=true;
-                arm=true;
+                armStage=active;
                 gameToggle=false;
-            } else if (gamepad2.options&&armInit&&gameToggle) {
-                arm=!arm;
+            }
+
+            if (gamepad2.options&&!(armStage==none)&&gameToggle) {
+                if(armStage==active){armStage=idle;}else{armStage=active;}
                 gameToggle=false;
             }
 
             int gamepadArmInput = -(Math.round(gamepad2.right_stick_y)) * armMovementArea;
-            if(armInit) {
-                if (arm) {
-                    if (gamepadArmInput >= 0) {armMethodObj.setArmDegree(gamepadArmInput);}else{armMethodObj.setArmDegree(0);}
-                }else {
+
+            if (armStage==active) {
+                if (gamepadArmInput >= 0) {
+                     armMethodObj.setArmDegree(gamepadArmInput);angleIntake.setPosition(gamepad2.right_stick_y*servoTiltFactor);
+                }else{armMethodObj.setArmDegree(0);angleIntake.setPosition(0);}
+
+            } else if (armStage==idle) {
                     armMethodObj.setArmDegree(defaultDegreesFromStart);
+            }else{
+                armMethodObj.setArmDegree(0);
+            }
+
+
+            if(armStage==active){
+                if(gamepad2.right_bumper) {
+                    wheelIntake.setPosition(90 * wheelIntakeDirection);
+                } else if (gamepad2.right_trigger<0.5) {
+                    wheelIntake.setPosition(-90 * wheelIntakeDirection);
                 }
-            }else{armMethodObj.setArmDegree(0);}
+            }
+
             manageTelemetry();
             telemetry.addData("arm position",armMethodObj.getArmDegree());
             telemetry.update();
