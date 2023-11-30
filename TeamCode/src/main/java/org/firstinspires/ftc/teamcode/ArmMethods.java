@@ -8,13 +8,15 @@ public class ArmMethods {
     private Servo angleIntake;
     private Servo wheelIntake;
     private int fullRatio;
-    private int offset;
+
     public ArmMethods(DcMotor mainArmMotor, Servo angle, Servo wheel){
         armMotor=mainArmMotor;
+        armMotor.setDirection(DcMotor.Direction.FORWARD);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         angleIntake=angle;
         wheelIntake=wheel;
+        fullRatio = 500;
     }
     public double armMotorMove(float leftStickY, int speedDecrease){
         double power = 0.0;

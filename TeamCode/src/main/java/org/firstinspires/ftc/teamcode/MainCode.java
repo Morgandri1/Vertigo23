@@ -163,32 +163,37 @@ public class MainCode extends LinearOpMode {
             MotorMethodObj.move(axial, lateral, yaw);
 
             //arm movement and initialization
-            if(!gamepad2.options){gameToggle=true;}
+            if(!gamepad2.left_bumper){gameToggle=true;}
             //arm initialization
-            if(gamepad2.options&&armStage==none){
+            if(gamepad2.left_bumper&&armStage==none){
                 //arm init
+                telemetry.addData("default degreees from start: ", defaultDegreesFromStart);
                 armMethodObj.setArmDegree(-defaultDegreesFromStart);
                 armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 armStage=active;
                 gameToggle=false;
             }
             //arm toggle
-            if (gamepad2.options&&!(armStage==none)&&gameToggle) {
+            if (gamepad2.left_bumper&&!(armStage==none)&&gameToggle) {
+                telemetry.addData("Arm toggle ", armStage);
                 if(armStage==active){armStage=idle;}else{armStage=active;}
                 gameToggle=false;
             }
             //determines the angle for the arm based on the controller
-            int gamepadArmInput = -(Math.round(gamepad2.right_stick_y)) * armMovementArea;
+            int gamepadArmInput = -(Math.round(armMovementArea*gamepad2.right_stick_y));
             //moves the arm and tilts the intake to the correct position
             if (armStage==active) {
+                telemetry.addData("Armstage Active: ", armStage);
                 if (gamepadArmInput >= 0) {
                      armMethodObj.setArmDegree(gamepadArmInput);angleIntake.setPosition(gamepad2.right_stick_y*servoTiltFactor);
                 }else{armMethodObj.setArmDegree(0);angleIntake.setPosition(0);}
 
             } else if (armStage==idle) {
+                telemetry.addData("Armstage idle ", armStage);
                     armMethodObj.setArmDegree(defaultDegreesFromStart);
             }else{
                 armMethodObj.setArmDegree(0);
+                telemetry.addData("Degree 0 ", armMotor.getCurrentPosition());
             }
 
             //spins the wheels on the intake

@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.lang.reflect.Method;
@@ -74,6 +75,9 @@ public class scanAuto extends LinearOpMode {
     DcMotor leftBackDrive = null;
     DcMotor rightFrontDrive = null;
     DcMotor rightBackDrive = null;
+    DcMotor armMotor = null;
+    Servo angleIntake;
+    Servo wheelIntake;
 
     @Override
     public void runOpMode() {
@@ -84,7 +88,9 @@ public class scanAuto extends LinearOpMode {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "BL");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
+        armMotor = hardwareMap.get(DcMotor.class, "am1");
         MotorMethods MethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
+        ArmMethods ArmObj = new ArmMethods(armMotor, angleIntake, wheelIntake);
         MethodObj.SetDirectionForward();
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
