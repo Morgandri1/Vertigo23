@@ -101,18 +101,24 @@ public class MainCode extends LinearOpMode {
     DcMotor rightFrontDrive = null;
     DcMotor rightBackDrive = null;
     DcMotor armMotor = null;
+
+    boolean arm=false;
+    boolean armInit=false;
+    boolean gameToggle=true;
+    int defaultDegreesFromStart=220;
+    int armMovementArea=90;
     @Override
     public void runOpMode() {
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "FL");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "BL");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "FL");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "BL");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
         armMotor = hardwareMap.get(DcMotor.class, "am1");
         MotorMethods MotorMethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
-        ArmMethods ArmMethodObj = new ArmMethods(armMotor);
+        ArmMethods armMethodObj = new ArmMethods(armMotor);
         MotorMethodObj.SetDirectionForward();
 
         MotorMethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -138,28 +144,51 @@ public class MainCode extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            double max;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x;
-            double yaw     =  gamepad1.right_stick_x;
-            MotorMethodObj.move(axial,lateral,yaw);
+            double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral = gamepad1.left_stick_x;
+            double yaw = gamepad1.right_stick_x;
+            MotorMethodObj.move(axial, lateral, yaw);
 
+            //arm movement and initialization
+            if(!gamepad2.options){gameToggle=true;}
 
-            armMotor.setPower(ArmMethodObj.armMotorMove(gamepad2.left_stick_y, 4));
-            
-            double leftFrontPower = MotorMethodObj.ReturnLF();
-            double leftBackPower = MotorMethodObj.ReturnLB();
-            double rightFrontPower = MotorMethodObj.ReturnRF();
-            double rightBackPower = MotorMethodObj.ReturnRB();
-            if(gamepad2.a){telemetry.addData("Arm Motor Position: ", armMotor.getCurrentPosition());}
-            if(gamepad1.guide||gamepad2.guide){telemetry.addData("Status", "Run Time: " + runtime.toString());}
-            if(gamepad1.a){telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);}
-            if(gamepad1.b){telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);}
+            if(gamepad2.options&&!armInit){
+                //arm init
+                armMethodObj.setArmDegree(-defaultDegreesFromStart);
+                armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                armInit=true;
+                arm=true;
+                gameToggle=false;
+            } else if (gamepad2.options&&armInit&&gameToggle) {
+                arm=!arm;
+                gameToggle=false;
+            }
+
+            int gamepadArmInput = -(Math.round(gamepad2.right_stick_y)) * armMovementArea;
+            if(armInit) {
+                if (arm) {
+                    if (gamepadArmInput >= 0) {armMethodObj.setArmDegree(gamepadArmInput);}else{armMethodObj.setArmDegree(0);}
+                }else {
+                    armMethodObj.setArmDegree(defaultDegreesFromStart);
+                }
+            }else{armMethodObj.setArmDegree(0);}
+            manageTelemetry();
+            telemetry.addData("arm position",armMethodObj.getArmDegree());
             telemetry.update();
         }
+
     }
+        public void manageTelemetry(){
+            if(gamepad2.a){telemetry.addData("Arm Motor Position: ", armMotor.getCurrentPosition());}
+            if(gamepad1.guide||gamepad2.guide){telemetry.addData("Status", "Run Time: " + runtime.toString());}
+            if(gamepad1.a){telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontDrive.getPower(), rightFrontDrive.getPower());}
+            if(gamepad1.b){telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackDrive.getPower(), rightBackDrive.getPower());}
+        }
+
+
+
 }
 
 

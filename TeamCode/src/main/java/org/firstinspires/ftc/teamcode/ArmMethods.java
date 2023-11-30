@@ -27,10 +27,10 @@ public class ArmMethods {
         return power;
     }
     public void setArmDegree(int degree){
-        armMotor.setTargetPosition((degree+offset)*fullRatio);
+        armMotor.setTargetPosition((degree)*fullRatio);
     }
     public int getArmDegree(){
-        return (armMotor.getTargetPosition()/fullRatio)-offset;
+        return (armMotor.getTargetPosition()/fullRatio);
     }
 
 }
