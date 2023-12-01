@@ -34,8 +34,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import java.lang.reflect.Method;
 
 /*
@@ -78,6 +79,7 @@ public class scanAuto extends LinearOpMode {
     DcMotor armMotor = null;
     Servo angleIntake;
     Servo wheelIntake;
+    DistanceSensor distanceSensor;
 
     @Override
     public void runOpMode() {
@@ -89,9 +91,11 @@ public class scanAuto extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
         armMotor = hardwareMap.get(DcMotor.class, "am1");
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "DS");
         MotorMethods MethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
         ArmMethods ArmObj = new ArmMethods(armMotor, angleIntake, wheelIntake);
         MethodObj.SetDirectionForward();
+        MethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
         // ########################################################################################
@@ -115,18 +119,30 @@ public class scanAuto extends LinearOpMode {
         double turnTime1=150;
         double turnTime2=150;
         double turnTime3=150;
-        for(double time=runtime.milliseconds();runtime.milliseconds()<time+turnTime1;){
-            MethodObj.move(0,0,-0.5);
+        boolean found = false;
+        if (!found) {
+            for (double time = runtime.milliseconds(); runtime.milliseconds() < time + turnTime1; ) {
+                MethodObj.move(0, 0, -0.5);
+                if (distanceSensor.getDistance(DistanceUnit.CM) <= 120) {
+                    found = true;
+                    telemetry.addData("Found Object at Runtime(MS): ", runtime.milliseconds());
+                    break;
+                }
+            }
+            //Meant to return the robot to the leftmost side of the middle stripe
+            for(double turnback = runtime.milliseconds()-70; runtime.milliseconds()-time<time;){
+                MethodObj.move(0, 0, 0.5);
+            }
+            MethodObj.move(0,0,0);
         }
-        MethodObj.move(0,0,0);
         sleep(2000);
-        for(double time=runtime.milliseconds();runtime.milliseconds()<time+turnTime2;){
-
-
-
-            MethodObj.move(0,0,0.5);
+        if (!found) {
+            for (double time = runtime.milliseconds(); runtime.milliseconds() < time + turnTime2; ) {
+                MethodObj.move(0, 0, 0.5);
+            }
+            MethodObj.move(0, 0, 0);
+            if(distanceSensor.getDistance(DistanceUnit.CM) <= 120){found = true;}
         }
-        MethodObj.move(0,0,0);
         sleep(2000);
         for(double time=runtime.milliseconds();runtime.milliseconds()<time+turnTime3;){
 
