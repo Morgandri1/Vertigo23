@@ -9,6 +9,7 @@ public class ArmMethods {
     private Servo wheelIntake;
     private int fullRatio;
 
+    private int fullRatio=5;
     public ArmMethods(DcMotor mainArmMotor, Servo angle, Servo wheel){
         armMotor=mainArmMotor;
         armMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -34,6 +35,8 @@ public class ArmMethods {
     }
     public void setArmDegree(int degree){
         armMotor.setTargetPosition((degree)*fullRatio);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(0.1);
     }
     public int getArmDegree(){
         return (armMotor.getTargetPosition()/fullRatio);
