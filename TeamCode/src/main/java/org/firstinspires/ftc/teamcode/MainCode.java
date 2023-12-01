@@ -146,9 +146,10 @@ public class MainCode extends LinearOpMode {
             double yaw     =  gamepad1.right_stick_x;
             MotorMethodObj.move(axial,lateral,yaw);
 
-
-            armMotor.setPower(ArmMethodObj.armMotorMove(gamepad2.left_stick_y, 4));
-            
+            if(gamepad2.left_bumper) {
+                ArmMethodObj.setArmDegree(-Math.round(90 * gamepad2.right_stick_y));
+            }
+            telemetry.addData("aaaa",ArmMethodObj.getArmDegree());
             double leftFrontPower = MotorMethodObj.ReturnLF();
             double leftBackPower = MotorMethodObj.ReturnLB();
             double rightFrontPower = MotorMethodObj.ReturnRF();

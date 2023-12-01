@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class ArmMethods {
     private DcMotor armMotor;
 
-    private int fullRatio;
+    private int fullRatio=5;
     private int offset;
     public ArmMethods(DcMotor mainArmMotor){
         armMotor=mainArmMotor;
@@ -28,6 +28,8 @@ public class ArmMethods {
     }
     public void setArmDegree(int degree){
         armMotor.setTargetPosition((degree+offset)*fullRatio);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(0.1);
     }
     public int getArmDegree(){
         return (armMotor.getTargetPosition()/fullRatio)-offset;
