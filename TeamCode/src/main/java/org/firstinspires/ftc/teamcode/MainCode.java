@@ -112,8 +112,8 @@ public class MainCode extends LinearOpMode {
     int active=1;
     int idle=2;
     boolean gameToggle=true;
-    int defaultDegreesFromStart=220;
-    int armMovementArea=90;
+    int defaultDegreesFromStart=250;
+    int armMovementArea=100;
     int servoTiltFactor=-50;
     int wheelIntakeDirection=1;
     @Override
@@ -130,7 +130,7 @@ public class MainCode extends LinearOpMode {
         wheelIntake = hardwareMap.get(Servo.class,"servowheel");
         MotorMethods MotorMethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
         ArmMethods armMethodObj = new ArmMethods(armMotor,angleIntake,wheelIntake);
-        MotorMethodObj.SetDirectionForward();
+        MotorMethodObj.SetDirectionBackwards();
 
         MotorMethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         // ########################################################################################
@@ -159,7 +159,7 @@ public class MainCode extends LinearOpMode {
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral = gamepad1.left_stick_x;
-            double yaw = gamepad1.right_stick_x;
+            double yaw = -gamepad1.right_stick_x;
             MotorMethodObj.move(axial, lateral, yaw);
 
             //arm movement and initialization
@@ -167,8 +167,18 @@ public class MainCode extends LinearOpMode {
             //arm initialization
             if(gamepad2.left_bumper&&armStage==none){
                 //arm init
-                telemetry.addData("default degreees from start: ", defaultDegreesFromStart);
+                telemetry.addData("default degrees from start: ", defaultDegreesFromStart);
                 armMethodObj.setArmDegree(-defaultDegreesFromStart);
+                /*
+                while(armMethodObj.getArmDegree()!=-defaultDegreesFromStart){
+                    telemetry.addData("arm init",armMethodObj.getArmDegree());
+                    telemetry.update();
+                    sleep(300);
+                }
+                */
+                sleep(6000);
+
+
                 armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 armStage=active;
                 gameToggle=false;
@@ -181,6 +191,7 @@ public class MainCode extends LinearOpMode {
             }
             //determines the angle for the arm based on the controller
             int gamepadArmInput = -(Math.round(armMovementArea*gamepad2.right_stick_y));
+            telemetry.addData("input",gamepadArmInput);
             //moves the arm and tilts the intake to the correct position
             if (armStage==active) {
                 telemetry.addData("Armstage Active: ", armStage);
@@ -212,7 +223,7 @@ public class MainCode extends LinearOpMode {
 
     }
         public void manageTelemetry(){
-            if(gamepad2.a){telemetry.addData("Arm Motor Position: ", armMotor.getCurrentPosition());}
+            if(gamepad2.a){telemetry.addData("Arm Motor Position: ", armMotor.getTargetPosition());}
             if(gamepad1.guide||gamepad2.guide){telemetry.addData("Status", "Run Time: " + runtime.toString());}
             if(gamepad1.a){telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontDrive.getPower(), rightFrontDrive.getPower());}
             if(gamepad1.b){telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackDrive.getPower(), rightBackDrive.getPower());}
