@@ -190,13 +190,14 @@ public class MainCode extends LinearOpMode {
                 gameToggle=false;
             }
             //determines the angle for the arm based on the controller
-            int gamepadArmInput = -(Math.round(armMovementArea*gamepad2.right_stick_y));
+            int gamepadArmInput = (Math.round(armMovementArea*(-gamepad2.right_stick_y)));
+            double servoPosition=100-Math.round(armMethodObj.getArmDegree());
             telemetry.addData("input",gamepadArmInput);
             //moves the arm and tilts the intake to the correct position
             if (armStage==active) {
                 telemetry.addData("Armstage Active: ", armStage);
                 if (gamepadArmInput >= 0) {
-                     armMethodObj.setArmDegree(gamepadArmInput);angleIntake.setPosition(gamepad2.right_stick_y*servoTiltFactor);
+                     armMethodObj.setArmDegree(gamepadArmInput);angleIntake.setPosition(servoPosition/100);
                 }else{armMethodObj.setArmDegree(0);angleIntake.setPosition(0);}
 
             } else if (armStage==idle) {
@@ -218,6 +219,7 @@ public class MainCode extends LinearOpMode {
 
             manageTelemetry();
             telemetry.addData("arm position",armMethodObj.getArmDegree());
+            telemetry.addData("servo position",angleIntake.getPosition());
             telemetry.update();
         }
 
