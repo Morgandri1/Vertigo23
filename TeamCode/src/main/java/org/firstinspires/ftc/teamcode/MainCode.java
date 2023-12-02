@@ -169,14 +169,15 @@ public class MainCode extends LinearOpMode {
                 //arm init
                 telemetry.addData("default degrees from start: ", defaultDegreesFromStart);
                 armMethodObj.setArmDegree(-defaultDegreesFromStart);
-                /*
+
                 while(armMethodObj.getArmDegree()!=-defaultDegreesFromStart){
                     telemetry.addData("arm init",armMethodObj.getArmDegree());
+                    double tempServoPosition=100-Math.round(armMethodObj.getArmDegree()+defaultDegreesFromStart);
+                    telemetry.addData("tempServo",tempServoPosition) ;
+                    angleIntake.setPosition(tempServoPosition/100);
                     telemetry.update();
-                    sleep(300);
                 }
-                */
-                sleep(6000);
+
 
 
                 armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -195,17 +196,19 @@ public class MainCode extends LinearOpMode {
             telemetry.addData("input",gamepadArmInput);
             //moves the arm and tilts the intake to the correct position
             if (armStage==active) {
-                telemetry.addData("Armstage Active: ", armStage);
+
                 if (gamepadArmInput >= 0) {
                      armMethodObj.setArmDegree(gamepadArmInput);angleIntake.setPosition(servoPosition/100);
                 }else{armMethodObj.setArmDegree(0);angleIntake.setPosition(0);}
 
             } else if (armStage==idle) {
-                telemetry.addData("Armstage idle ", armStage);
+
                     armMethodObj.setArmDegree(defaultDegreesFromStart);
-            }else{
+                    angleIntake.setPosition(servoPosition/100);
+            }else {
                 armMethodObj.setArmDegree(0);
                 telemetry.addData("Degree 0 ", armMotor.getCurrentPosition());
+                angleIntake.setPosition(0.03);
             }
 
             //spins the wheels on the intake
@@ -218,6 +221,7 @@ public class MainCode extends LinearOpMode {
             }
 
             manageTelemetry();
+            telemetry.addData("Armstage", armStage);
             telemetry.addData("arm position",armMethodObj.getArmDegree());
             telemetry.addData("servo position",angleIntake.getPosition());
             telemetry.update();
@@ -230,6 +234,7 @@ public class MainCode extends LinearOpMode {
             if(gamepad1.a){telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontDrive.getPower(), rightFrontDrive.getPower());}
             if(gamepad1.b){telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackDrive.getPower(), rightBackDrive.getPower());}
         }
+
 
 
 
