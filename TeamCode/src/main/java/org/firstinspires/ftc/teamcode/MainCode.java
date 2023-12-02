@@ -107,7 +107,7 @@ public class MainCode extends LinearOpMode {
     Servo angleIntake = null;
     Servo wheelIntake=null;
 
-    int armStage=0;
+    int armStage=2;
     int none=0;
     int active=1;
     int idle=2;
@@ -164,26 +164,7 @@ public class MainCode extends LinearOpMode {
 
             //arm movement and initialization
             if(!gamepad2.left_bumper){gameToggle=true;}
-            //arm initialization
-            if(gamepad2.left_bumper&&armStage==none){
-                //arm init
-                telemetry.addData("default degrees from start: ", defaultDegreesFromStart);
-                armMethodObj.setArmDegree(-defaultDegreesFromStart);
 
-                while(armMethodObj.getArmDegree()!=-defaultDegreesFromStart){
-                    telemetry.addData("arm init",armMethodObj.getArmDegree());
-                    double tempServoPosition=100-Math.round(armMethodObj.getArmDegree()+defaultDegreesFromStart);
-                    telemetry.addData("tempServo",tempServoPosition) ;
-                    angleIntake.setPosition(tempServoPosition/100);
-                    telemetry.update();
-                }
-
-
-
-                armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                armStage=active;
-                gameToggle=false;
-            }
             //arm toggle
             if (gamepad2.left_bumper&&!(armStage==none)&&gameToggle) {
                 telemetry.addData("Arm toggle ", armStage);
