@@ -195,9 +195,14 @@ public class MainCode extends LinearOpMode {
             //spins the wheels on the intake
             if(armStage==active){
                 if(gamepad2.right_bumper) {
-                    wheelIntake.setPosition(90 * wheelIntakeDirection);
-                } else if (gamepad2.right_trigger<0.5) {
-                    wheelIntake.setPosition(-90 * wheelIntakeDirection);
+                    wheelIntake.setPosition(0.10);
+                    telemetry.addData("servocont",wheelIntake.getPosition());
+                } else if (gamepad2.right_trigger>0.5) {
+                    wheelIntake.setPosition(0.90);
+                    telemetry.addData("servocont",wheelIntake.getPosition());
+
+                }else{
+                    wheelIntake.setPosition(0.50);
                 }
             }
 
