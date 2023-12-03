@@ -116,6 +116,10 @@ public class MainCode extends LinearOpMode {
     int armMovementArea=100;
     int servoTiltFactor=-50;
     int wheelIntakeDirection=1;
+    double axial=0;
+    double lateral=0;
+    double yaw=0;
+    double driveMultiplier=0.5;
     @Override
     public void runOpMode() {
 
@@ -157,9 +161,19 @@ public class MainCode extends LinearOpMode {
         while (opModeIsActive()) {
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral = gamepad1.left_stick_x;
-            double yaw = -gamepad1.right_stick_x;
+
+            if((gamepad1.left_trigger<0.5&&gamepad1.right_trigger<0.5)||(gamepad1.left_trigger>0.5&&gamepad1.right_trigger>0.5)) {
+                driveMultiplier=0.5;
+            } else if (gamepad1.left_trigger>0.5&&gamepad1.right_trigger<0.5) {
+                driveMultiplier=0.25;
+            } else if (gamepad1.left_trigger<0.5&&gamepad1.right_trigger>0.5) {
+                driveMultiplier=1;
+            }
+
+            telemetry.addData("drive mult",driveMultiplier);
+            axial =driveMultiplier*(-gamepad1.left_stick_y);  // Note: pushing stick forward gives negative value
+            lateral = driveMultiplier*(gamepad1.left_stick_x);
+            yaw = driveMultiplier*(-gamepad1.right_stick_x);
             MotorMethodObj.move(axial, lateral, yaw);
 
             //arm movement and initialization
