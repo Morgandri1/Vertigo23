@@ -67,7 +67,7 @@ import java.lang.reflect.Method;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="scan", group="Robot")
+@Autonomous(name="Left Side Autonomous", group="Robot")
 public class scanAuto extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
@@ -116,41 +116,27 @@ public class scanAuto extends LinearOpMode {
         runtime.reset();
 
         //change turntime to calibrate
-        double turnTime1=150;
-        double turnTime2=150;
-        double turnTime3=150;
+        double turnTime1=200;
+        String marker = "None";
         boolean found = false;
+        if(distanceSensor.getDistance(DistanceUnit.CM) < 80){
+            marker = "Center";
+            found = true;
+        }
         if (!found) {
             for (double time = runtime.milliseconds(); runtime.milliseconds() < time + turnTime1; ) {
                 MethodObj.move(0, 0, -0.5);
-                if (distanceSensor.getDistance(DistanceUnit.CM) <= 120) {
-                    found = true;
-                    telemetry.addData("Found Object at Runtime(MS): ", runtime.milliseconds());
+                if (distanceSensor.getDistance(DistanceUnit.CM) <= 90) {
+                    marker = "left";
                     break;
                 }
             }
-            //Meant to return the robot to the leftmost side of the middle stripe
-            for(double turnback = runtime.milliseconds()-70; runtime.milliseconds()-time<time;){
-                MethodObj.move(0, 0, 0.5);
-            }
-            MethodObj.move(0,0,0);
         }
-        sleep(2000);
-        if (!found) {
-            for (double time = runtime.milliseconds(); runtime.milliseconds() < time + turnTime2; ) {
-                MethodObj.move(0, 0, 0.5);
-            }
-            MethodObj.move(0, 0, 0);
-            if(distanceSensor.getDistance(DistanceUnit.CM) <= 120){found = true;}
-        }
-        sleep(2000);
-        for(double time=runtime.milliseconds();runtime.milliseconds()<time+turnTime3;){
-
-
-
-            MethodObj.move(0,0,0.5);
-        }
+        if (!found){marker = "right";}
+        //Meant to return the robot to the leftmost side of the middle stripe
+        for(double turnback = runtime.milliseconds(); runtime.milliseconds()-turnback<turnback;){MethodObj.move(0, 0, 0.5);}
         MethodObj.move(0,0,0);
+        telemetry.addData("Object at side: ", marker);
 
 
             /*
