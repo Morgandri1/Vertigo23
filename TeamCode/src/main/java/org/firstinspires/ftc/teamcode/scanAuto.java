@@ -116,28 +116,40 @@ public class scanAuto extends LinearOpMode {
         runtime.reset();
 
         //change turntime to calibrate
-        double turnTime1=200;
+        double turnTime1=1200;
         String marker = "None";
         boolean found = false;
-        if(distanceSensor.getDistance(DistanceUnit.CM) < 80){
+        if(distanceSensor.getDistance(DistanceUnit.CM) < 100){
             marker = "Center";
             found = true;
         }
         if (!found) {
             for (double time = runtime.milliseconds(); runtime.milliseconds() < time + turnTime1; ) {
-                MethodObj.move(0, 0, -0.5);
-                if (distanceSensor.getDistance(DistanceUnit.CM) <= 90) {
+                MethodObj.move(0, 0, -0.2);
+                telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
+                telemetry.update();
+                if (distanceSensor.getDistance(DistanceUnit.CM) <= 100) {
                     marker = "left";
                     break;
                 }
             }
         }
         if (!found){marker = "right";}
-        //Meant to return the robot to the leftmost side of the middle stripe
-        for(double turnback = runtime.milliseconds(); runtime.milliseconds()-turnback<turnback;){MethodObj.move(0, 0, 0.5);}
         MethodObj.move(0,0,0);
+        sleep(1000);
+        //Meant to return the robot to the leftmost side of the middle stripe
+        for(double turnback = runtime.milliseconds(); (runtime.milliseconds()+1000)-turnback<turnback;){
+            MethodObj.move(0, 0, 0.2);
+            telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
+            telemetry.update();
+        }
         telemetry.addData("Object at side: ", marker);
-
+        telemetry.update();
+        MethodObj.move(0,0,0);
+        for (double x = 1.0; x == 1.0;){
+            telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
+            telemetry.update();
+        }
 
             /*
             double leftFrontPower = MethodObj.ReturnLF();
