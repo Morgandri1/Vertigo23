@@ -31,13 +31,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import java.lang.reflect.Method;
 
 /*
  * This file contains an example of a Linear "OpMode".
@@ -67,8 +65,8 @@ import java.lang.reflect.Method;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Left Side Autonomous", group="Robot")
-public class scanAuto extends LinearOpMode {
+@Autonomous(name="Right Side Autonomous", group="Robot")
+public class RightAutonomous extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -92,9 +90,10 @@ public class scanAuto extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
         armMotor = hardwareMap.get(DcMotor.class, "am1");
         angleIntake = hardwareMap.get(Servo.class, "servoangle");
+        wheelIntake = hardwareMap.get(Servo.class, "servowheel");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "DS");
         MotorMethods MethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
-        ArmMethods ArmObj = new ArmMethods(armMotor, angleIntake, wheelIntake);
+        ArmMethods armMethodObj = new ArmMethods(armMotor, angleIntake, wheelIntake);
         MethodObj.SetDirectionForward();
         MethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         // ########################################################################################
@@ -107,7 +106,6 @@ public class scanAuto extends LinearOpMode {
         // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.
         // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
-        //MethodObj.SetDirectionForward();
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -123,66 +121,109 @@ public class scanAuto extends LinearOpMode {
         double timeTurned = 0.0;
         double turnCheck = 0.0;
         double distance = distanceSensor.getDistance(DistanceUnit.CM);
-            if (distanceSensor.getDistance(DistanceUnit.CM) < 90) {
-                marker = "Center";
-                found = true;
-                for (double time = runtime.milliseconds(); runtime.milliseconds() - time < 50; ) {
-                    MethodObj.move(0, 0, 0.3);
+        if (distanceSensor.getDistance(DistanceUnit.CM) < 90) {
+            marker = "Center";
+            found = true;
+            for (double time = runtime.milliseconds(); runtime.milliseconds() - time < 80; ) {
+                MethodObj.move(0, 0, 0.3);
+            }
+            MethodObj.move(0, 0, 0.0);
+            sleep(400);
+            for (double time2 = runtime.milliseconds(); runtime.milliseconds() - time2 < 2000; ) {
+                MethodObj.move(-0.2, 0, 0);
+            }
+            MethodObj.move(0, 0, 0.0);
+            sleep(400);
+            //Intake System Code
+            armMethodObj.setArmDegree(0);
+            sleep(200);
+            wheelIntake.setPosition(0.10);
+            sleep(200);
+            armMethodObj.setArmDegree(250);
+            sleep(200);
+            //Moves back to the start
+            for (double time2 = runtime.milliseconds(); runtime.milliseconds() - time2 < 2000; ) {
+                MethodObj.move(0.2, 0, 0);
+            }
+            MethodObj.move(0, 0, 0.0);
+            sleep(400);
+            //Turns the robot back to the starting direction
+            for (double time = runtime.milliseconds(); runtime.milliseconds() - time < 80; ) {
+                MethodObj.move(0, 0, -0.3);
+            }
+            MethodObj.move(0, 0, 0.0);
+        }
+        if (!found) {
+            for (double time = runtime.milliseconds(); runtime.milliseconds() < time + turnTime1; ) {
+                MethodObj.move(0, 0, -0.2);
+                telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
+                telemetry.update();
+                if (distanceSensor.getDistance(DistanceUnit.CM) <= 100) {
+                    marker = "left";
+                    found = true;
+                    MethodObj.move(0, 0, 0.0);
+                    sleep(400);
+                    break;
                 }
-                MethodObj.move(0, 0, 0.0);
-                sleep(400);
-                for (double time2 = runtime.milliseconds(); runtime.milliseconds() - time2 < 1100; ) {
+            }
+            timeTurned = runtime.milliseconds()-400;
+            if (marker == "left"){
+                //Moves the robot to the prop
+                for (double time2 = runtime.milliseconds(); runtime.milliseconds() - time2 < 1000; ) {
                     MethodObj.move(-0.3, 0, 0);
                 }
-                MethodObj.move(0, 0, 0.0);
-                //Move back to start area (for testing runs)
+                MethodObj.move(0, 0, 0);
                 sleep(400);
-                for (double time2 = runtime.milliseconds(); runtime.milliseconds() - time2 < 1100; ) {
-                    MethodObj.move(0.5, 0, 0);
+                //Intake System Code
+                armMethodObj.setArmDegree(0);
+                sleep(200);
+                wheelIntake.setPosition(0.10);
+                sleep(200);
+                armMethodObj.setArmDegree(250);
+                sleep(200);
+                //Moves the robot back to the start
+                for (double time2 = runtime.milliseconds(); runtime.milliseconds() - time2 < 1000; ) {
+                    MethodObj.move(0.3, 0, 0);
                 }
-                MethodObj.move(0, 0, 0.0);
-                sleep(400);
-                for (double time = runtime.milliseconds(); runtime.milliseconds() - time < 50; ) {
-                    MethodObj.move(0, 0, -0.3);
-                }
-                MethodObj.move(0, 0, 0.0);
+                MethodObj.move(0, 0, 0);
+                sleep(1000);
             }
-            if (!found) {
-                for (double time = runtime.milliseconds(); runtime.milliseconds() < time + turnTime1; ) {
-                    MethodObj.move(0, 0, -0.2);
-                    telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
-                    telemetry.update();
-                    if (distanceSensor.getDistance(DistanceUnit.CM) <= 100) {
-                        marker = "left";
-                        MethodObj.move(0, 0, 0.0);
-                        sleep(400);
-                        break;
-                    }
-                }
-                timeTurned = runtime.milliseconds()-200;
-                if (marker == "left"){
-                    //Moves the robot to the prop
-                    for (double time2 = runtime.milliseconds(); runtime.milliseconds() - time2 < 1000; ) {
-                        MethodObj.move(-0.3, 0, 0);
-                    }
-                    MethodObj.move(0, 0, 0);
-                    sleep(400);
-                    //Moves the robot back to the start
-                    for (double time2 = runtime.milliseconds(); runtime.milliseconds() - time2 < 1000; ) {
-                        MethodObj.move(0.3, 0, 0);
-                    }
-                    MethodObj.move(0, 0, 0);
-                    sleep(1000);
-                }
-                //Turns the robot back to the starting direction
-                for(double turnback = runtime.milliseconds(); runtime.milliseconds()-turnback<timeTurned;){
-                    MethodObj.move(0, 0, 0.2);
-                }
+            //Turns the robot back to the starting direction
+            for(double turnback = runtime.milliseconds(); runtime.milliseconds()-turnback<timeTurned;){
+                MethodObj.move(0, 0, 0.2);
             }
-            if (!found) {
-                marker = "right";
+        }
+        if (!found) {
+            marker = "right";
+            for (double time = runtime.milliseconds(); runtime.milliseconds() - time < 300; ) {
+                MethodObj.move(0, 0, 0.2);
             }
-            MethodObj.move(0, 0, 0);
+            MethodObj.move(0,0,0.0);
+            sleep(400);
+            for (double time2 = runtime.milliseconds(); runtime.milliseconds() - time2 < 900; ) {
+                MethodObj.move(0.3, 0, 0);
+            }
+            MethodObj.move(0,0,0.0);
+            //Intake System Code
+            sleep(400);
+            for (double time = runtime.milliseconds(); runtime.milliseconds()-time<1000;){
+            armMethodObj.setArmDegree(0);}
+            sleep(200);
+            wheelIntake.setPosition(0.10);
+            sleep(200);
+            armMethodObj.setArmDegree(250);
+            sleep(200);
+            for (double time2 = runtime.milliseconds(); runtime.milliseconds() - time2 < 900; ) {
+                MethodObj.move(-0.3, 0, 0);
+            }
+            MethodObj.move(0,0,0.0);
+            sleep(400);
+            for (double time = runtime.milliseconds(); runtime.milliseconds() - time < 300; ) {
+                MethodObj.move(0, 0, -0.2);
+            }
+            MethodObj.move(0,0,0.0);
+            sleep(400);
+        }
         /*
         Turns the robot back to the center:
         for(double turnback = runtime.milliseconds(); (runtime.milliseconds()+1000)-turnback<turnback;){
@@ -192,26 +233,14 @@ public class scanAuto extends LinearOpMode {
         }
         MethodObj.move(0,0,0);
          */
-            while (opModeIsActive()) {
-                telemetry.addData("First Distance: ", distance);
-                telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
-                telemetry.addData("Object at side: ", marker);
-                telemetry.update();
-            }
-
-            /*
-            double leftFrontPower = MethodObj.ReturnLF();
-            double leftBackPower = MethodObj.ReturnLB();
-            double rightFrontPower = MethodObj.ReturnRF();
-            double rightBackPower = MethodObj.ReturnRB();
-
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-            telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
+        while (opModeIsActive()) {
+            telemetry.addData("First Distance: ", distance);
+            telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
+            telemetry.addData("Object at side: ", marker);
             telemetry.update();
-            */
+        }
     }
 }
+
 
 

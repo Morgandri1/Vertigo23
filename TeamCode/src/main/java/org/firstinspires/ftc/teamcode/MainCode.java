@@ -193,7 +193,7 @@ public class MainCode extends LinearOpMode {
             if (armStage==active) {
 
                 if (gamepadArmInput >= 0) {
-                     armMethodObj.setArmDegree(gamepadArmInput);angleIntake.setPosition(servoPosition/100);
+                     armMethodObj.setArmDegree(gamepadArmInput);angleIntake.setPosition((servoPosition/100)-0.1);
                 }else{armMethodObj.setArmDegree(0);angleIntake.setPosition(0);}
 
             } else if (armStage==idle) {
