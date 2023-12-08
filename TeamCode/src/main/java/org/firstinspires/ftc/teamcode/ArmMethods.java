@@ -1,16 +1,33 @@
 package org.firstinspires.ftc.teamcode;
 
+import static java.lang.Thread.sleep;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-
-public class ArmMethods {
+import com.qualcomm.robotcore.util.ElapsedTime;
+public class ArmMethods extends LinearOpMode{
+    private ElapsedTime runtime = new ElapsedTime();
     private DcMotor armMotor;
     private Servo angleIntake;
     private Servo wheelIntake;
+    private DcMotor leftFrontDrive;
+    private DcMotor leftBackDrive;
+    private DcMotor rightFrontDrive;
+    private DcMotor rightBackDrive;
+    private MotorMethods motorMethodsObj;
     private int fullRatio=5;
 
-    int offset =-250;
+    int offset =-252;
 
+    @Override
+    public void runOpMode(){
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "FL");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "BL");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
+        MotorMethods motorMethodsObj = new MotorMethods(leftFrontDrive,rightFrontDrive,leftBackDrive,rightBackDrive);
+    }
     public ArmMethods(DcMotor mainArmMotor, Servo angle, Servo wheel){
         armMotor=mainArmMotor;
         armMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -42,4 +59,24 @@ public class ArmMethods {
         return (armMotor.getCurrentPosition()/fullRatio)-offset;
     }
 
+    public void intakeAuto(int position) {
+        if (position == 1){
+            while(angleIntake.getPosition() != 0.9 && opModeIsActive()) {
+                setArmDegree(0);
+                angleIntake.setPosition(0.9);
+                sleep(2);
+            }
+        }
+        else if (position == 0){
+            while(angleIntake.getPosition() != 0.5 && opModeIsActive()) {
+                setArmDegree(252);
+                angleIntake.setPosition(0.5);
+                sleep(2);
+            }
+        }
+    }
+    //Technically a motor method, but I needed to call Move() from a different file
+    public void timedMotorMove(int time, double axial, double lateral, double yaw) {
+        for (double startTime = runtime.milliseconds(); runtime.milliseconds() - startTime < time; ) {motorMethodsObj.move(axial, lateral, yaw);}
+    }
 }

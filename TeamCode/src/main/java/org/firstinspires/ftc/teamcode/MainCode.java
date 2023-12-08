@@ -112,7 +112,7 @@ public class MainCode extends LinearOpMode {
     int active=1;
     int idle=2;
     boolean gameToggle=true;
-    int defaultDegreesFromStart=250;
+    int defaultDegreesFromStart=252;
     int armMovementArea=100;
     int servoTiltFactor=-50;
     int wheelIntakeDirection=1;
@@ -194,6 +194,7 @@ public class MainCode extends LinearOpMode {
 
                 if (gamepadArmInput >= 0) {
                      armMethodObj.setArmDegree(gamepadArmInput);angleIntake.setPosition((servoPosition/100)-0.1);
+                     telemetry.addData("servo pos",(servoPosition/100)-0.1);
                 }else{armMethodObj.setArmDegree(0);angleIntake.setPosition(0);}
 
             } else if (armStage==idle) {
