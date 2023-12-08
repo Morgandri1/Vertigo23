@@ -122,22 +122,22 @@ public class RightAutonomous extends LinearOpMode {
             marker = "Center";
             found = true;
             //turn slightly right:
-            armMethodObj.timedMotorMove(80,0,0,0.3);
+            MethodObj.timedMotorMove(80,0,0,0.3);
             MethodObj.move(0, 0, 0.0);
             sleep(400);
             //Move forward to stripe:
-            armMethodObj.timedMotorMove(2000,-0.2,0,0.0);
+            MethodObj.timedMotorMove(2000,-0.2,0,0.0);
             MethodObj.move(0, 0, 0.0);
             //Deposits Pixel on stripe (Intake System):
             armMethodObj.intakeAuto(1);
             for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
             armMethodObj.intakeAuto(0);
             //Moves back to the start position:
-            armMethodObj.timedMotorMove(2000,0.2,0,0.0);
+            MethodObj.timedMotorMove(2000,0.2,0,0.0);
             MethodObj.move(0, 0, 0.0);
             sleep(400);
             //Turns the robot back to the starting direction:
-            armMethodObj.timedMotorMove(80,0.0,0,-0.3);
+            MethodObj.timedMotorMove(80,0.0,0,-0.3);
             MethodObj.move(0, 0, 0.0);
         }
         if (!found) {
@@ -158,7 +158,7 @@ public class RightAutonomous extends LinearOpMode {
             }
             if (marker == "left"){
                 //Moves the robot to the stripe:
-                armMethodObj.timedMotorMove(1000,-0.3,0,0.0);
+                MethodObj.timedMotorMove(1000,-0.3,0,0.0);
                 MethodObj.move(0, 0, 0);
                 sleep(400);
                 //Deposits pixel on stripe (Intake System):
@@ -166,34 +166,34 @@ public class RightAutonomous extends LinearOpMode {
                 for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
                 armMethodObj.intakeAuto(0);
                 //Moves the robot back to the starting position:
-                armMethodObj.timedMotorMove(1000,0.3,0,0.0);
+                MethodObj.timedMotorMove(1000,0.3,0,0.0);
                 MethodObj.move(0, 0, 0);
                 sleep(1000);
             }
             //Turns the robot back to the starting direction:
-            armMethodObj.timedMotorMove((int)timeTurned,0.0,0,0.2);
+            MethodObj.timedMotorMove((int)timeTurned,0.0,0,0.2);
             MethodObj.move(0,0,0);
             sleep(400);
         }
         if (!found) {
             marker = "right";
             //Turns the robot to the right:
-            armMethodObj.timedMotorMove(300,0.0,0,0.2);
+            MethodObj.timedMotorMove(300,0.0,0,0.2);
             MethodObj.move(0,0,0.0);
             sleep(400);
             //Moves the robot to the stripe:
-            armMethodObj.timedMotorMove(900,0.3,0,0.0);
+            MethodObj.timedMotorMove(900,0.3,0,0.0);
             MethodObj.move(0,0,0.0);
             //Deposits pixel on stripe (Intake System):
             armMethodObj.intakeAuto(1);
             for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
             armMethodObj.intakeAuto(0);
             //Moves the robot back to the starting position:
-            armMethodObj.timedMotorMove(900,-0.3,0,0.0);
+            MethodObj.timedMotorMove(900,-0.3,0,0.0);
             MethodObj.move(0,0,0.0);
             sleep(400);
             //Moves the robot back to the starting direction:
-            armMethodObj.timedMotorMove(300,0.0,0,-0.2);
+            MethodObj.timedMotorMove(300,0.0,0,-0.2);
             MethodObj.move(0,0,0.0);
             sleep(400);
         }
