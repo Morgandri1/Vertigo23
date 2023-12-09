@@ -46,28 +46,28 @@ public class ArmMethods extends LinearOpMode{
     }
 
     //This method is used to control the arm and intake system's position:
-    public void intakeAuto(int position) {
+    public void intakeAuto(int position, int timeToMove) {
         //This method has not been tested, please correct the method if needed.
 
         //Full forward (Position to intake pixels from ground):
-        if (position == 1 || position == 252){
-            for(double time = runtime.milliseconds(); runtime.milliseconds()-time<3000;) {
-                setArmDegree(252);
-                angleIntake.setPosition(100-Math.round(getArmDegree()));
+        if (position == 1){
+            for(double time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;) {
+                setArmDegree(40);
+                angleIntake.setPosition(0.03);
                 sleep(2);
             }
         }
         //Full back (Standard/default position):
         else if (position == 0){
-            for(double time = runtime.milliseconds(); runtime.milliseconds()-time<3000;) {
-                setArmDegree(0);
+            for(double time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;) {
+                setArmDegree(252);
                 angleIntake.setPosition(0.03);
                 sleep(2);
             }
         }
         //Upright Position:
         else if (position == 2 || position == 100){
-            for(double time = runtime.milliseconds(); runtime.milliseconds()-time<3000;) {
+            for(double time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;) {
                 setArmDegree(100);
                 angleIntake.setPosition(100-Math.round(getArmDegree()));
                 sleep(2);

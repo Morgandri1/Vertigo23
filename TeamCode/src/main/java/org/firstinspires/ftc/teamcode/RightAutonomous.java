@@ -114,6 +114,7 @@ public class RightAutonomous extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
+        MethodObj.timedMotorMove(70,0.3,0,0);
         String marker = "None";
         boolean found = false;
         double timeTurned = 0.0;
@@ -122,29 +123,34 @@ public class RightAutonomous extends LinearOpMode {
             marker = "Center";
             found = true;
             //turn slightly right:
-            MethodObj.timedMotorMove(80,0,0,0.3);
+            MethodObj.timedMotorMove(120,0,0,0.3);
             sleep(400);
             //Move forward to stripe:
-            MethodObj.timedMotorMove(2000,-0.2,0,0.0);
+            MethodObj.timedMotorMove(1600,-0.2,0,0.0);
             //Deposits Pixel on stripe (Intake System):
-            armMethodObj.intakeAuto(1);
+            armMethodObj.intakeAuto(1,5000);
+            sleep(200);
             for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
-            armMethodObj.intakeAuto(0);
+            sleep(200);
+            armMethodObj.intakeAuto(0,5000);
             //Moves back to the start position:
-            MethodObj.timedMotorMove(2000,0.2,0,0.0);
+            MethodObj.timedMotorMove(1600,0.2,0,0.0);
             sleep(400);
             //Turns the robot back to the starting direction:
-            MethodObj.timedMotorMove(80,0.0,0,-0.3);
+            MethodObj.timedMotorMove(120,0.0,0,-0.3);
+            sleep(200);
+            wheelIntake.setPosition(0.5);
+            sleep(200);
         }
         if (!found) {
             //Turns left until it finds the object or has completed the search (Scanning period):
             double firstTurned = runtime.milliseconds();
-            for (double time = firstTurned; runtime.milliseconds()-time<1200; ) {
-                MethodObj.move(0, 0, -0.2);
+            for (double time = firstTurned; runtime.milliseconds()-time<800; ) {
+                MethodObj.move(0, 0, 0.2);
                 telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
                 telemetry.update();
-                if (distanceSensor.getDistance(DistanceUnit.CM) <= 100) {
-                    marker = "left";
+                if (distanceSensor.getDistance(DistanceUnit.CM) <= 85) {
+                    marker = "right";
                     found = true;
                     MethodObj.move(0, 0, 0.0);
                     timeTurned = runtime.milliseconds()-firstTurned;
@@ -153,46 +159,60 @@ public class RightAutonomous extends LinearOpMode {
                 }
             }
             //Moves to the left stripe and places down the pixel (Only runs if the object was found during the scanning period):
-            if (marker == "left"){
+            if (marker == "right"){
                 //Moves the robot to the stripe:
+                MethodObj.timedMotorMove(70,0,0,0.2);
+                sleep(300);
                 MethodObj.timedMotorMove(1000,-0.3,0,0.0);
                 sleep(400);
                 //Deposits pixel on stripe (Intake System):
-                armMethodObj.intakeAuto(1);
+                for(double time = runtime.milliseconds(); runtime.milliseconds()-time<5000;) {
+                    armMethodObj.setArmDegree(60);
+                    angleIntake.setPosition(0.03);
+                    sleep(2);
+                }
+                sleep(200);
+                MethodObj.timedMotorMove(70,0,0,-0.2);
+                sleep(200);
                 for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
-                armMethodObj.intakeAuto(0);
+                sleep(200);
+                armMethodObj.intakeAuto(0,5000);
                 //Moves the robot back to the starting position:
                 MethodObj.timedMotorMove(1000,0.3,0,0.0);
-                sleep(1000);
+                sleep(400);
+                wheelIntake.setPosition(0.5);
+                sleep(200);
             }
             //Turns the robot back to the starting direction:
-            MethodObj.timedMotorMove((int)timeTurned,0.0,0,0.2);
+            MethodObj.timedMotorMove((int)timeTurned,0.0,0,-0.2);
             sleep(400);
         }
         //Runs if the object has not been found on both the center and left lines:
         if (!found) {
-            marker = "right";
+            marker = "left";
             //Turns the robot to the right:
-            MethodObj.timedMotorMove(300,0.0,0,0.2);
-            MethodObj.move(0,0,0.0);
+            MethodObj.timedMotorMove(300,0.0,0,-0.2);
             sleep(400);
             //Moves the robot to the stripe:
             MethodObj.timedMotorMove(900,0.3,0,0.0);
-            MethodObj.move(0,0,0.0);
             //Deposits pixel on stripe (Intake System):
-            armMethodObj.intakeAuto(1);
+            armMethodObj.intakeAuto(1,5000);
+            sleep(200);
             for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
-            armMethodObj.intakeAuto(0);
+            sleep(200);
+            armMethodObj.intakeAuto(0,5000);
+            sleep(200);
             //Moves the robot back to the starting position:
             MethodObj.timedMotorMove(900,-0.3,0,0.0);
-            MethodObj.move(0,0,0.0);
             sleep(400);
             //Moves the robot back to the starting direction:
-            MethodObj.timedMotorMove(300,0.0,0,-0.2);
-            MethodObj.move(0,0,0.0);
+            MethodObj.timedMotorMove(300,0.0,0,0.2);
             sleep(400);
+            wheelIntake.setPosition(0.5);
+            sleep(200);
         }
         //(Right side edition) Goes from starting position to the board, puts the pixel on the board, and then parks in the parking area:
+        /*
         MethodObj.timedMotorMove(300,0,0,0.3);
         sleep(200);
         MethodObj.timedMotorMove(500,0.3,0,0);
@@ -219,6 +239,7 @@ public class RightAutonomous extends LinearOpMode {
         sleep(200);
         MethodObj.timedMotorMove(200,0.3,0,0);
         sleep(200);
+         */
         //Outputs information until the end of the Autonomous Period:
         while (opModeIsActive()) {
             telemetry.addData("First Distance: ", distance);
