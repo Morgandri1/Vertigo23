@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 public class ArmMethods extends LinearOpMode{
+    private ElapsedTime runtime = new ElapsedTime();
     private DcMotor armMotor;
     private Servo angleIntake;
     private Servo wheelIntake;
@@ -43,18 +45,31 @@ public class ArmMethods extends LinearOpMode{
         return (armMotor.getCurrentPosition()/fullRatio)-offset;
     }
 
+    //This method is used to control the arm and intake system's position:
     public void intakeAuto(int position) {
-        if (position == 1){
-            while(angleIntake.getPosition() != 0.9 && opModeIsActive()) {
-                setArmDegree(0);
-                angleIntake.setPosition(0.9);
+        //This method has not been tested, please correct the method if needed.
+
+        //Full forward (Position to intake pixels from ground):
+        if (position == 1 || position == 252){
+            for(double time = runtime.milliseconds(); runtime.milliseconds()-time<3000;) {
+                setArmDegree(252);
+                angleIntake.setPosition(100-Math.round(getArmDegree()));
                 sleep(2);
             }
         }
+        //Full back (Standard/default position):
         else if (position == 0){
-            while(angleIntake.getPosition() != 0.5 && opModeIsActive()) {
-                setArmDegree(252);
-                angleIntake.setPosition(0.5);
+            for(double time = runtime.milliseconds(); runtime.milliseconds()-time<3000;) {
+                setArmDegree(0);
+                angleIntake.setPosition(0.03);
+                sleep(2);
+            }
+        }
+        //Upright Position:
+        else if (position == 2 || position == 100){
+            for(double time = runtime.milliseconds(); runtime.milliseconds()-time<3000;) {
+                setArmDegree(100);
+                angleIntake.setPosition(100-Math.round(getArmDegree()));
                 sleep(2);
             }
         }

@@ -4,7 +4,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-class MotorMethods {
+class MotorMethods{
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFrontDrive;
     private DcMotor leftBackDrive;
@@ -69,7 +69,10 @@ class MotorMethods {
         rightFrontDrive.setZeroPowerBehavior(thing);
         rightBackDrive.setZeroPowerBehavior(thing);
     }
+
+    //This method moves the robot for a set amount of time depending on the calls' arguments:
     public void timedMotorMove(int time, double axial, double lateral, double yaw) {
         for (double startTime = runtime.milliseconds(); runtime.milliseconds() - startTime < time; ) {move(axial, lateral, yaw);}
+        move(0,0,0);
     }
 }

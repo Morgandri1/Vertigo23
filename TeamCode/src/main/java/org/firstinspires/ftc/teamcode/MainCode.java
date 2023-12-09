@@ -114,8 +114,6 @@ public class MainCode extends LinearOpMode {
     boolean gameToggle=true;
     int defaultDegreesFromStart=252;
     int armMovementArea=100;
-    int servoTiltFactor=-50;
-    int wheelIntakeDirection=1;
     double axial=0;
     double lateral=0;
     double yaw=0;
@@ -135,7 +133,6 @@ public class MainCode extends LinearOpMode {
         MotorMethods MotorMethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
         ArmMethods armMethodObj = new ArmMethods(armMotor,angleIntake,wheelIntake);
         MotorMethodObj.SetDirectionBackwards();
-
         MotorMethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -191,23 +188,25 @@ public class MainCode extends LinearOpMode {
             telemetry.addData("input",gamepadArmInput);
             //moves the arm and tilts the intake to the correct position
             if (armStage==active) {
-
+                //Takes the input of the right stick y, and brings the arm and intake system to that value:
                 if (gamepadArmInput >= 0) {
-                     armMethodObj.setArmDegree(gamepadArmInput);angleIntake.setPosition((servoPosition/100)-0.1);
+                     armMethodObj.setArmDegree(gamepadArmInput);
+                     angleIntake.setPosition((servoPosition/100)-0.1);
                      telemetry.addData("servo pos",(servoPosition/100)-0.1);
                 }else{armMethodObj.setArmDegree(0);angleIntake.setPosition(0);}
-
+            //Sets the arm and intake system on the ground in front of the robot:
             } else if (armStage==idle) {
-
                     armMethodObj.setArmDegree(defaultDegreesFromStart);
                     angleIntake.setPosition(servoPosition/100);
-            }else {
+            }
+            //Sets the arm and intake system back to the default position:
+            else {
                 armMethodObj.setArmDegree(0);
                 telemetry.addData("Degree 0 ", armMotor.getCurrentPosition());
                 angleIntake.setPosition(0.03);
             }
 
-            //spins the wheels on the intake
+            //Spins the intake system's wheels depending on the right bumper or trigger being pressed:
             if(armStage==active){
                 if(gamepad2.right_bumper) {
                     wheelIntake.setPosition(0.10);
@@ -220,7 +219,7 @@ public class MainCode extends LinearOpMode {
                     wheelIntake.setPosition(0.50);
                 }
             }
-
+            //Sends data to the driver:
             manageTelemetry();
             telemetry.addData("Armstage", armStage);
             telemetry.addData("arm position",armMethodObj.getArmDegree());
@@ -229,6 +228,7 @@ public class MainCode extends LinearOpMode {
         }
 
     }
+        //Sends messages to the driver when specific buttons are pressed:
         public void manageTelemetry(){
             if(gamepad2.a){telemetry.addData("Arm Motor Position: ", armMotor.getTargetPosition());}
             if(gamepad1.guide||gamepad2.guide){telemetry.addData("Status", "Run Time: " + runtime.toString());}
