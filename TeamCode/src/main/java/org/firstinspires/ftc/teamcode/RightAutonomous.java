@@ -154,11 +154,11 @@ public class RightAutonomous extends LinearOpMode {
                 MethodObj.move(0, 0, 0.2);
                 telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
                 telemetry.update();
+                timeTurned = runtime.milliseconds()-firstTurned;
                 if (distanceSensor.getDistance(DistanceUnit.CM) <= 85) {
                     marker = "right";
                     found = true;
                     MethodObj.move(0, 0, 0.0);
-                    timeTurned = runtime.milliseconds()-firstTurned;
                     sleep(400);
                     break;
                 }

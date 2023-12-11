@@ -71,7 +71,7 @@ class MotorMethods{
     }
 
     //This method moves the robot for a set amount of time depending on the calls' arguments:
-    public void timedMotorMove(int time, double axial, double lateral, double yaw) {
+    public void timedMotorMove(double time, double axial, double lateral, double yaw) {
         for (double startTime = runtime.milliseconds(); runtime.milliseconds() - startTime < time; ) {move(axial, lateral, yaw);}
         move(0,0,0);
     }

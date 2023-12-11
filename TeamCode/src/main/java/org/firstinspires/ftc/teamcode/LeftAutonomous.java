@@ -75,9 +75,9 @@ public class LeftAutonomous extends LinearOpMode {
     DcMotor leftBackDrive = null;
     DcMotor rightFrontDrive = null;
     DcMotor rightBackDrive = null;
-    DcMotor armMotor = null;
-    Servo angleIntake;
-    Servo wheelIntake;
+    //DcMotor armMotor = null;
+    //Servo angleIntake;
+    //Servo wheelIntake;
     DistanceSensor distanceSensor;
 
     @Override
@@ -93,12 +93,12 @@ public class LeftAutonomous extends LinearOpMode {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "BL");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
-        armMotor = hardwareMap.get(DcMotor.class, "am1");
-        angleIntake = hardwareMap.get(Servo.class, "servoangle");
-        wheelIntake = hardwareMap.get(Servo.class, "servowheel");
+        //armMotor = hardwareMap.get(DcMotor.class, "am1");
+        //angleIntake = hardwareMap.get(Servo.class, "servoangle");
+        //wheelIntake = hardwareMap.get(Servo.class, "servowheel");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "DS");
         MotorMethods MethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
-        ArmMethods armMethodObj = new ArmMethods(armMotor, angleIntake, wheelIntake);
+        //ArmMethods armMethodObj = new ArmMethods(armMotor, angleIntake, wheelIntake);
         MethodObj.SetDirectionForward();
         MethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         // ########################################################################################
@@ -121,7 +121,7 @@ public class LeftAutonomous extends LinearOpMode {
         String marker = "None";
         boolean found = false;
         double timeTurned = 0.0;
-        MethodObj.timedMotorMove(70,-0.3,0,0);
+        MethodObj.timedMotorMove(80,-0.3,0,0);
         sleep(300);
         double distance = distanceSensor.getDistance(DistanceUnit.CM);
             if (distanceSensor.getDistance(DistanceUnit.CM) < 90) {
@@ -133,21 +133,19 @@ public class LeftAutonomous extends LinearOpMode {
                 //Move forward to stripe:
                 MethodObj.timedMotorMove(600,-0.2,0,0.0);
                 //Deposits Pixel on stripe (Intake System):
-                armMethodObj.intakeAuto(1,5000);
+                //armMethodObj.intakeAuto(1,5000);
                 sleep(200);
-                for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
+                //for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
                 sleep(200);
-                armMethodObj.intakeAuto(0,5000);
+                //armMethodObj.intakeAuto(0,5000);
                 sleep(200);
-                wheelIntake.setPosition(0.5);
+                //wheelIntake.setPosition(0.5);
                 sleep(200);
-                /*
                 //Moves back to the start position:
                 MethodObj.timedMotorMove(700,0.2,0,0.0);
                 sleep(400);
                 //Turns the robot back to the starting direction:
                 MethodObj.timedMotorMove(130,0.0,0,-0.3);
-                 */
             }
             if (!found) {
                 //Turns left until it finds the object or has completed the search (Scanning period):
@@ -156,11 +154,12 @@ public class LeftAutonomous extends LinearOpMode {
                     MethodObj.move(0, 0, -0.2);
                     telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
                     telemetry.update();
+                    timeTurned = runtime.milliseconds()-firstTurned;
                     if (distanceSensor.getDistance(DistanceUnit.CM) <= 85) {
+                        timeTurned = runtime.milliseconds()-firstTurned;
                         marker = "left";
                         found = true;
                         MethodObj.move(0, 0, 0.0);
-                        timeTurned = runtime.milliseconds()-firstTurned;
                         sleep(400);
                         break;
                     }
@@ -172,50 +171,49 @@ public class LeftAutonomous extends LinearOpMode {
                     MethodObj.timedMotorMove(900,-0.3,0,0.0);
                     sleep(400);
                     //Deposits pixel on stripe (Intake System):
-                    armMethodObj.intakeAuto(1,5000);
+                    //armMethodObj.intakeAuto(1,5000);
                     sleep(200);
-                    for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
+                    //for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
                     sleep(200);
-                    armMethodObj.intakeAuto(0,5000);
+                    //armMethodObj.intakeAuto(0,5000);
                     sleep(200);
-                    wheelIntake.setPosition(0.5);
-                    /*
+                    //wheelIntake.setPosition(0.5);
                     //Moves the robot back to the starting position:
                     MethodObj.timedMotorMove(900,0.3,0,0.0);
                     sleep(200);
                     MethodObj.timedMotorMove(200,0,0,0.2);
                     sleep(300);
-                     */
                 }
                 //Turns the robot back to the starting direction:
-                MethodObj.timedMotorMove((int)timeTurned,0.0,0,0.2);
+                MethodObj.timedMotorMove(timeTurned,0.0,0,0.2);
                 sleep(400);
             }
             //Runs if the object has not been found on both the center and left lines:
             if (!found) {
                 marker = "right";
                 //Turns the robot to the right:
-                MethodObj.timedMotorMove(300,0.0,0,0.2);
+                MethodObj.timedMotorMove(500,0.0,0,0.2);
                 sleep(300);
                 //Moves the robot to the stripe:
                 MethodObj.timedMotorMove(900,-0.3,0,0.0);
                 sleep(300);
                 //Deposits pixel on stripe (Intake System):
-                armMethodObj.intakeAuto(1,5000);
+                //armMethodObj.intakeAuto(1,5000);
                 sleep(200);
-                for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
+                //for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
                 sleep(200);
-                armMethodObj.intakeAuto(0,5000);
+                //armMethodObj.intakeAuto(0,5000);
                 sleep(200);
                 //Moves the robot back to the starting position:
                 MethodObj.timedMotorMove(900,0.3,0,0.0);
                 sleep(200);
                 //Moves the robot back to the starting direction:
-                MethodObj.timedMotorMove(300,0.0,0,-0.2);
+                MethodObj.timedMotorMove(500,0.0,0,-0.2);
                 sleep(200);
-                wheelIntake.setPosition(0.5);
+                //wheelIntake.setPosition(0.5);
                 sleep(300);
             }
+            //MethodObj.timedMotorMove(8000,0,0,0.3);
             //(Left side edition) Goes from starting position to the board, puts the pixel on the board, and then parks in the parking area:
             //WARNING, The following code will most likely hit the other alliance robot, do not run the code until a collision-prevention system has been set up:
             /*
