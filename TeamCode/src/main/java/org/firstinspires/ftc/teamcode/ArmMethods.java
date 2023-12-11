@@ -52,8 +52,8 @@ public class ArmMethods extends LinearOpMode{
         //Full forward (Position to intake pixels from ground):
         if (position == 1){
             for(double time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;) {
-                setArmDegree(40);
-                angleIntake.setPosition(0.03);
+                setArmDegree(15);
+                angleIntake.setPosition(0.8);
                 sleep(2);
             }
         }

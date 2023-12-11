@@ -75,4 +75,5 @@ class MotorMethods{
         for (double startTime = runtime.milliseconds(); runtime.milliseconds() - startTime < time; ) {move(axial, lateral, yaw);}
         move(0,0,0);
     }
+    //timedMotorMove(1000,1.0,0,0);
 }
