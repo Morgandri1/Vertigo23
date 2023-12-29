@@ -8,33 +8,21 @@ public class ArmMethods extends LinearOpMode{
     private DcMotor armMotor;
     private Servo angleIntake;
     private Servo wheelIntake;
+    private DcMotor linearMotor;
     private int fullRatio=5;
 
     int offset =-252;
 
     @Override
     public void runOpMode(){}
-    public ArmMethods(DcMotor mainArmMotor, Servo angle, Servo wheel){
+    public ArmMethods(DcMotor mainArmMotor, Servo angle, Servo wheel,DcMotor linear){
         armMotor=mainArmMotor;
+        linearMotor = linear;
         armMotor.setDirection(DcMotor.Direction.FORWARD);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         angleIntake=angle;
         wheelIntake=wheel;
-    }
-    public double armMotorMove(float leftStickY, int speedDecrease){
-        double power = 0.0;
-        int motorSpeed = speedDecrease;
-        if ((double)leftStickY > 1.0){
-            power = 1.0/motorSpeed;
-        }
-        else if ((double)leftStickY < -1.0){
-            power = -1.0/motorSpeed;
-        }
-        else{
-            power = (double)leftStickY/motorSpeed;
-        }
-        return power;
     }
     public void setArmDegree(int degree){
         armMotor.setTargetPosition((degree+offset)*fullRatio);
@@ -44,11 +32,8 @@ public class ArmMethods extends LinearOpMode{
     public int getArmDegree(){
         return (armMotor.getCurrentPosition()/fullRatio)-offset;
     }
-
     //This method is used to control the arm and intake system's position:
     public void intakeAuto(int position, int timeToMove) {
-        //This method has not been tested, please correct the method if needed.
-
         //Full forward (Position to intake pixels from ground):
         if (position == 1){
             for(double time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;) {
@@ -73,5 +58,33 @@ public class ArmMethods extends LinearOpMode{
                 sleep(2);
             }
         }
+    }
+    //Moves the linear slide to different positions depending on the state specified:
+    public void linearMove(int positionState){
+        if (positionState == 0){
+            for (double time = runtime.milliseconds();runtime.milliseconds()-time<5000;){
+                linearMotor.setPower(-0.5);
+            }
+            linearMotor.setPower(0);
+        }
+        else if (positionState == 1){
+            for (double time = runtime.milliseconds();runtime.milliseconds()-time<5000;){
+                linearMotor.setPower(0.5);
+            }
+            linearMotor.setPower(0);
+        }
+        else if (positionState == 2){
+            //Modify time and power to move to correct distance for autonomous:
+            for (double time = runtime.milliseconds();runtime.milliseconds()-time<5000;){
+                //Add code here
+            }
+            linearMotor.setPower(0);
+        }
+    }
+    //Brakes the arm-motors whenever they have 0 power:
+    public void setZeroBehaviorAll(){
+        DcMotor.ZeroPowerBehavior brake = DcMotor.ZeroPowerBehavior.BRAKE;
+        armMotor.setZeroPowerBehavior(brake);
+        linearMotor.setZeroPowerBehavior(brake);
     }
 }

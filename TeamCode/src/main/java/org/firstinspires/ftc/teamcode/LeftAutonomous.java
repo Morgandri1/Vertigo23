@@ -75,9 +75,10 @@ public class LeftAutonomous extends LinearOpMode {
     DcMotor leftBackDrive = null;
     DcMotor rightFrontDrive = null;
     DcMotor rightBackDrive = null;
-    //DcMotor armMotor = null;
-    //Servo angleIntake;
-    //Servo wheelIntake;
+    DcMotor armMotor = null;
+    Servo angleIntake;
+    Servo wheelIntake;
+    DcMotor linearMotor = null;
     DistanceSensor distanceSensor;
 
     @Override
@@ -96,9 +97,10 @@ public class LeftAutonomous extends LinearOpMode {
         //armMotor = hardwareMap.get(DcMotor.class, "am1");
         //angleIntake = hardwareMap.get(Servo.class, "servoangle");
         //wheelIntake = hardwareMap.get(Servo.class, "servowheel");
+        //linearMotor = hardwareMap.get(DcMotor.class,"am2");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "DS");
         MotorMethods MethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
-        //ArmMethods armMethodObj = new ArmMethods(armMotor, angleIntake, wheelIntake);
+        //ArmMethods armMethodObj = new ArmMethods(armMotor, angleIntake, wheelIntake,linearMotor);
         MethodObj.SetDirectionForward();
         MethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         // ########################################################################################
@@ -224,7 +226,6 @@ public class LeftAutonomous extends LinearOpMode {
             MethodObj.timedMotorMove(8000,0.3,0,0);
             sleep(200);
              */
-            /*
             MethodObj.timedMotorMove(70,0.3,0,0);
             sleep(200);
             MethodObj.timedMotorMove(300,0,0,0.3);
@@ -233,16 +234,18 @@ public class LeftAutonomous extends LinearOpMode {
             sleep(200);
             MethodObj.timedMotorMove(300,0,0,-0.3);
             sleep(200);
-            MethodObj.timedMotorMove(400,0.3,0,0);
+            if (marker == "right") {MethodObj.timedMotorMove(300, 0.3, 0, 0);}
+            else if (marker == "center"){MethodObj.timedMotorMove(400, 0.3, 0, 0);}
+            else{MethodObj.timedMotorMove(500, 0.3, 0, 0);}
             sleep(200);
             MethodObj.timedMotorMove(300,0,0,0.3);
             sleep(200);
-            armMethodObj.intakeAuto(2);
-            wheelIntake.setPosition(0.9);
+            //armMethodObj.intakeAuto(2);
+            //wheelIntake.setPosition(0.9);
             sleep(200);
-            wheelIntake.setPosition(0.5);
+            //wheelIntake.setPosition(0.5);
             sleep(200);
-            armMethodObj.intakeAuto(0);
+            //armMethodObj.intakeAuto(0);
             MethodObj.timedMotorMove(300,0,0,0.3);
             sleep(200);
             MethodObj.timedMotorMove(500,0.3,0,0);
@@ -251,7 +254,6 @@ public class LeftAutonomous extends LinearOpMode {
             sleep(200);
             MethodObj.timedMotorMove(200,0.3,0,0);
             sleep(200);
-             */
             //Outputs information until the end of the Autonomous Period:
             while (opModeIsActive()) {
                 telemetry.addData("First Distance: ", distance);

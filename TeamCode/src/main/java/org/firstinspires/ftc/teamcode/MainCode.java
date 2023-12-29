@@ -103,10 +103,9 @@ public class MainCode extends LinearOpMode {
     DcMotor rightFrontDrive = null;
     DcMotor rightBackDrive = null;
     DcMotor armMotor = null;
-
     Servo angleIntake = null;
     Servo wheelIntake=null;
-
+    DcMotor linearMotor = null;
     int armStage=2;
     int none=0;
     int active=1;
@@ -130,8 +129,9 @@ public class MainCode extends LinearOpMode {
         armMotor = hardwareMap.get(DcMotor.class, "am1");
         angleIntake = hardwareMap.get(Servo.class,"servoangle");
         wheelIntake = hardwareMap.get(Servo.class,"servowheel");
+        linearMotor = hardwareMap.get(DcMotor.class, "am2");
         MotorMethods MotorMethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
-        ArmMethods armMethodObj = new ArmMethods(armMotor,angleIntake,wheelIntake);
+        ArmMethods armMethodObj = new ArmMethods(armMotor,angleIntake,wheelIntake,linearMotor);
         MotorMethodObj.SetDirectionBackwards();
         MotorMethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         // ########################################################################################

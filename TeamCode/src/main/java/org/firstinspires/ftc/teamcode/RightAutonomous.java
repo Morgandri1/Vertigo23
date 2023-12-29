@@ -78,6 +78,7 @@ public class RightAutonomous extends LinearOpMode {
     DcMotor armMotor = null;
     Servo angleIntake;
     Servo wheelIntake;
+    DcMotor linearMotor = null;
     DistanceSensor distanceSensor;
 
     @Override
@@ -92,9 +93,10 @@ public class RightAutonomous extends LinearOpMode {
         armMotor = hardwareMap.get(DcMotor.class, "am1");
         angleIntake = hardwareMap.get(Servo.class, "servoangle");
         wheelIntake = hardwareMap.get(Servo.class, "servowheel");
+        linearMotor = hardwareMap.get(DcMotor.class,"am2");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "DS");
         MotorMethods MethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
-        ArmMethods armMethodObj = new ArmMethods(armMotor, angleIntake, wheelIntake);
+        ArmMethods armMethodObj = new ArmMethods(armMotor, angleIntake, wheelIntake,linearMotor);
         MethodObj.SetDirectionForward();
         MethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         // ########################################################################################
