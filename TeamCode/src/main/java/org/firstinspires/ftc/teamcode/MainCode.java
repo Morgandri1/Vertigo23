@@ -106,22 +106,22 @@ public class MainCode extends LinearOpMode {
     DcMotor armMotor = null;
     Servo angleIntake = null;
     Servo wheelIntake=null;
+    Servo droneServo;
     DcMotor linearMotor = null;
     DistanceSensor distanceSensor;
-    int armStage=2;
-    int none=0;
-    int active=1;
-    int idle=2;
-    boolean gameToggle=true;
-    int defaultDegreesFromStart=252;
-    int armMovementArea=100;
-    double axial=0;
-    double lateral=0;
-    double yaw=0;
-    double driveMultiplier=0.5;
     @Override
     public void runOpMode() {
-
+        int armStage = 2;
+        int none = 0;
+        int active = 1;
+        int idle = 2;
+        boolean gameToggle = true;
+        int defaultDegreesFromStart = 252;
+        int armMovementArea = 100;
+        double axial = 0;
+        double lateral = 0;
+        double yaw = 0;
+        double driveMultiplier = 0.5;
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
         leftFrontDrive = hardwareMap.get(DcMotor.class, "FL");
@@ -129,11 +129,12 @@ public class MainCode extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
         armMotor = hardwareMap.get(DcMotor.class, "am1");
-        angleIntake = hardwareMap.get(Servo.class,"servoangle");
-        wheelIntake = hardwareMap.get(Servo.class,"servowheel");
+        angleIntake = hardwareMap.get(Servo.class, "servoangle");
+        wheelIntake = hardwareMap.get(Servo.class, "servowheel");
+        droneServo = hardwareMap.get(Servo.class, "servodrone");
         //linearMotor = hardwareMap.get(DcMotor.class, "am2");
-        MotorMethods MotorMethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive,distanceSensor);
-        ArmMethods armMethodObj = new ArmMethods(armMotor,angleIntake,wheelIntake);
+        MotorMethods MotorMethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive, distanceSensor);
+        ArmMethods armMethodObj = new ArmMethods(armMotor, angleIntake, wheelIntake);
         MotorMethodObj.SetDirectionBackwards();
         MotorMethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         // ########################################################################################
@@ -161,45 +162,54 @@ public class MainCode extends LinearOpMode {
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
 
-            if((gamepad1.left_trigger<0.5&&gamepad1.right_trigger<0.5)||(gamepad1.left_trigger>0.5&&gamepad1.right_trigger>0.5)) {
-                driveMultiplier=0.5;
-            } else if (gamepad1.left_trigger>0.5&&gamepad1.right_trigger<0.5) {
-                driveMultiplier=0.25;
-            } else if (gamepad1.left_trigger<0.5&&gamepad1.right_trigger>0.5) {
-                driveMultiplier=1;
+            if ((gamepad1.left_trigger < 0.5 && gamepad1.right_trigger < 0.5) || (gamepad1.left_trigger > 0.5 && gamepad1.right_trigger > 0.5)) {
+                driveMultiplier = 0.5;
+            } else if (gamepad1.left_trigger > 0.5 && gamepad1.right_trigger < 0.5) {
+                driveMultiplier = 0.25;
+            } else if (gamepad1.left_trigger < 0.5 && gamepad1.right_trigger > 0.5) {
+                driveMultiplier = 1;
             }
 
-            telemetry.addData("drive mult",driveMultiplier);
-            axial =driveMultiplier*(-gamepad1.left_stick_y);  // Note: pushing stick forward gives negative value
-            lateral = driveMultiplier*(gamepad1.left_stick_x);
-            yaw = driveMultiplier*(-gamepad1.right_stick_x);
+            telemetry.addData("drive mult", driveMultiplier);
+            axial = driveMultiplier * (-gamepad1.left_stick_y);  // Note: pushing stick forward gives negative value
+            lateral = driveMultiplier * (gamepad1.left_stick_x);
+            yaw = driveMultiplier * (-gamepad1.right_stick_x);
             MotorMethodObj.move(axial, lateral, yaw);
 
             //arm movement and initialization
-            if(!gamepad2.left_bumper){gameToggle=true;}
+            if (!gamepad2.left_bumper) {
+                gameToggle = true;
+            }
 
             //arm toggle
-            if (gamepad2.left_bumper&&!(armStage==none)&&gameToggle) {
+            if (gamepad2.left_bumper && !(armStage == none) && gameToggle) {
                 telemetry.addData("Arm toggle ", armStage);
-                if(armStage==active){armStage=idle;}else{armStage=active;}
-                gameToggle=false;
+                if (armStage == active) {
+                    armStage = idle;
+                } else {
+                    armStage = active;
+                }
+                gameToggle = false;
             }
             //determines the angle for the arm based on the controller
-            int gamepadArmInput = (Math.round(armMovementArea*(-gamepad2.right_stick_y)));
-            double servoPosition=100-Math.round(armMethodObj.getArmDegree());
-            telemetry.addData("input",gamepadArmInput);
+            int gamepadArmInput = (Math.round(armMovementArea * (-gamepad2.right_stick_y)));
+            double servoPosition = 100 - Math.round(armMethodObj.getArmDegree());
+            telemetry.addData("input", gamepadArmInput);
             //moves the arm and tilts the intake to the correct position
-            if (armStage==active) {
+            if (armStage == active) {
                 //Takes the input of the right stick y, and brings the arm and intake system to that value:
                 if (gamepadArmInput >= 0) {
-                     armMethodObj.setArmDegree(gamepadArmInput);
-                     angleIntake.setPosition((servoPosition/100)-0.1);
-                     telemetry.addData("servo pos",(servoPosition/100)-0.1);
-                }else{armMethodObj.setArmDegree(0);angleIntake.setPosition(0);}
-            //Sets the arm and intake system on the ground in front of the robot:
-            } else if (armStage==idle) {
-                    armMethodObj.setArmDegree(defaultDegreesFromStart);
-                    angleIntake.setPosition(servoPosition/100);
+                    armMethodObj.setArmDegree(gamepadArmInput);
+                    angleIntake.setPosition((servoPosition / 100) - 0.1);
+                    telemetry.addData("servo pos", (servoPosition / 100) - 0.1);
+                } else {
+                    armMethodObj.setArmDegree(0);
+                    angleIntake.setPosition(0);
+                }
+                //Sets the arm and intake system on the ground in front of the robot:
+            } else if (armStage == idle) {
+                armMethodObj.setArmDegree(defaultDegreesFromStart);
+                angleIntake.setPosition(servoPosition / 100);
             }
             //Sets the arm and intake system back to the default position:
             else {
@@ -209,38 +219,50 @@ public class MainCode extends LinearOpMode {
             }
 
             //Spins the intake system's wheels depending on the right bumper or trigger being pressed:
-            if(armStage==active){
-                if(gamepad2.right_bumper) {
+            if (armStage == active) {
+                if (gamepad2.right_bumper) {
                     wheelIntake.setPosition(0.9);
-                    telemetry.addData("servocont",wheelIntake.getPosition());
-                } else if (gamepad2.right_trigger>0.5) {
+                    telemetry.addData("servocont", wheelIntake.getPosition());
+                } else if (gamepad2.right_trigger > 0.5) {
                     wheelIntake.setPosition(0.1);
-                    telemetry.addData("servocont",wheelIntake.getPosition());
+                    telemetry.addData("servocont", wheelIntake.getPosition());
 
-                }else{
+                } else {
                     wheelIntake.setPosition(0.50);
                 }
             }
+            //Drone code:
+            //position ratio may need to be changed (current is 5)
+            double droneStartPos = droneServo.getPosition() / 5;
+            if (gamepad2.start) {
+                //50 degrees is the degree estimate for drone servo to move to start launch, can be changed later.
+                droneServo.setPosition(droneStartPos + 0.15);
+            }
+            //Arm pre-defined positions code / Improved arm code:
+            //Variable armStage is not used in the code below currently, it might be used in the future to be compatible with the original arm code
+            //Full forward (for pixel intake)
+            if (gamepad2.y) {
+                armMethodObj.intakeAuto(1, 2000);
+            }
+            //Upright
+            if (gamepad2.b) {
+                armMethodObj.intakeAuto(2, 2000);
+            }
+            //Resting
+            if (gamepad2.a) {
+                armMethodObj.intakeAuto(0, 2000);
+            }
+            //TBD
+            if(gamepad2.x){
+                //Add code for x button here
+            }
             //Sends data to the driver:
-            manageTelemetry();
             telemetry.addData("Armstage", armStage);
-            telemetry.addData("arm position",armMethodObj.getArmDegree());
-            telemetry.addData("servo position",angleIntake.getPosition());
+            telemetry.addData("arm position", armMethodObj.getArmDegree());
+            telemetry.addData("servo position", angleIntake.getPosition());
             telemetry.update();
         }
-
     }
-        //Sends messages to the driver when specific buttons are pressed:
-        public void manageTelemetry(){
-            if(gamepad2.a){telemetry.addData("Arm Motor Position: ", armMotor.getTargetPosition());}
-            if(gamepad1.guide||gamepad2.guide){telemetry.addData("Status", "Run Time: " + runtime.toString());}
-            if(gamepad1.a){telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontDrive.getPower(), rightFrontDrive.getPower());}
-            if(gamepad1.b){telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackDrive.getPower(), rightBackDrive.getPower());}
-        }
-
-
-
-
 }
 
 

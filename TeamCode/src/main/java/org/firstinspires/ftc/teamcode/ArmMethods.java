@@ -36,8 +36,8 @@ public class ArmMethods extends LinearOpMode{
         //Full forward (Position to intake pixels from ground):
         if (position == 1){
             for(double time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;) {
-                setArmDegree(15);
-                angleIntake.setPosition(0.8);
+                setArmDegree(0);
+                angleIntake.setPosition(0.1);
                 sleep(2);
             }
         }
@@ -50,13 +50,22 @@ public class ArmMethods extends LinearOpMode{
             }
         }
         //Upright Position:
-        else if (position == 2 || position == 100){
+        else if (position == 2){
             for(double time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;) {
                 setArmDegree(100);
                 angleIntake.setPosition(100-Math.round(getArmDegree()));
                 sleep(2);
             }
         }
+        //Deposit pixel on stripe position (only needed for autonomous):
+        else if (position == 3){
+            for (double time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;){
+                setArmDegree(15);
+                angleIntake.setPosition(0.12);
+                sleep(2);
+            }
+        }
+        armMotor.setPower(0);
     }
     //Moves the linear slide to different positions depending on the state specified:
     public void linearMove(int positionState){

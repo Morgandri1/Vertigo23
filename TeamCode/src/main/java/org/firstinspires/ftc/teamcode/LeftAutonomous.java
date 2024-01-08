@@ -200,7 +200,7 @@ public class LeftAutonomous extends LinearOpMode {
                 MethodObj.timedMotorMove(900,-0.3,0,0.0,false);
                 sleep(300);
                 //Deposits pixel on stripe (Intake System):
-                //armMethodObj.intakeAuto(1,5000);
+                armMethodObj.intakeAuto(3,2000);
                 sleep(200);
                 //for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
                 sleep(200);
@@ -226,19 +226,19 @@ public class LeftAutonomous extends LinearOpMode {
             MethodObj.timedMotorMove(8000,0.3,0,0);
             sleep(200);
              */
-            MethodObj.timedMotorMove(70,0.3,0,0,false);
+            MethodObj.timedMotorMove(70,0.3,0,0,true);
             sleep(200);
-            MethodObj.timedMotorMove(300,0,0,0.3,false);
+            MethodObj.timedMotorMove(300,0,0,0.3,true);
             sleep(200);
-            MethodObj.timedMotorMove(6000,0.3,0,0,false);
+            MethodObj.timedMotorMove(6000,0.3,0,0,true);
             sleep(200);
-            MethodObj.timedMotorMove(300,0,0,-0.3,false);
+            MethodObj.timedMotorMove(300,0,0,-0.3,true);
             sleep(200);
-            if (marker == "right") {MethodObj.timedMotorMove(300, 0.3, 0, 0,false);}
-            else if (marker == "center"){MethodObj.timedMotorMove(400, 0.3, 0, 0,false);}
-            else{MethodObj.timedMotorMove(500, 0.3, 0, 0,false);}
+            if (marker == "right") {MethodObj.timedMotorMove(300, 0.3, 0, 0,true);}
+            else if (marker == "center"){MethodObj.timedMotorMove(400, 0.3, 0, 0,true);}
+            else{MethodObj.timedMotorMove(500, 0.3, 0, 0,true);}
             sleep(200);
-            MethodObj.timedMotorMove(300,0,0,0.3,false);
+            MethodObj.timedMotorMove(300,0,0,0.3,true);
             sleep(200);
             //armMethodObj.intakeAuto(2);
             //wheelIntake.setPosition(0.9);
@@ -246,13 +246,13 @@ public class LeftAutonomous extends LinearOpMode {
             //wheelIntake.setPosition(0.5);
             sleep(200);
             //armMethodObj.intakeAuto(0);
-            MethodObj.timedMotorMove(300,0,0,0.3,false);
+            MethodObj.timedMotorMove(300,0,0,0.3,true);
             sleep(200);
-            MethodObj.timedMotorMove(500,0.3,0,0,false);
+            MethodObj.timedMotorMove(500,0.3,0,0,true);
             sleep(200);
-            MethodObj.timedMotorMove(300,0,0,-0.3,false);
+            MethodObj.timedMotorMove(300,0,0,-0.3,true);
             sleep(200);
-            MethodObj.timedMotorMove(200,0.3,0,0,false);
+            MethodObj.timedMotorMove(200,0.3,0,0,true);
             sleep(200);
             //Outputs information until the end of the Autonomous Period:
             while (opModeIsActive()) {

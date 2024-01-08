@@ -199,12 +199,13 @@ public class RightAutonomous extends LinearOpMode {
             sleep(400);
             //Moves the robot to the stripe:
             MethodObj.timedMotorMove(900,-0.3,0,0.0,false);
+            sleep(300);
             //Deposits pixel on stripe (Intake System):
-            armMethodObj.intakeAuto(1,5000);
+            armMethodObj.intakeAuto(3,2000);
             sleep(200);
             for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
             sleep(200);
-            armMethodObj.intakeAuto(0,5000);
+            armMethodObj.intakeAuto(0,2000);
             sleep(200);
             //Moves the robot back to the starting position:
             MethodObj.timedMotorMove(900,0.3,0,0.0,false);
