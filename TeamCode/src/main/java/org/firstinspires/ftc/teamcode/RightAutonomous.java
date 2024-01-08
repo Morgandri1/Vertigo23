@@ -78,7 +78,7 @@ public class RightAutonomous extends LinearOpMode {
     DcMotor armMotor = null;
     Servo angleIntake;
     Servo wheelIntake;
-    DcMotor linearMotor = null;
+    //DcMotor linearMotor = null;
     DistanceSensor distanceSensor;
 
     @Override
@@ -93,10 +93,10 @@ public class RightAutonomous extends LinearOpMode {
         armMotor = hardwareMap.get(DcMotor.class, "am1");
         angleIntake = hardwareMap.get(Servo.class, "servoangle");
         wheelIntake = hardwareMap.get(Servo.class, "servowheel");
-        linearMotor = hardwareMap.get(DcMotor.class,"am2");
+        //linearMotor = hardwareMap.get(DcMotor.class,"am2");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "DS");
-        MotorMethods MethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
-        ArmMethods armMethodObj = new ArmMethods(armMotor, angleIntake, wheelIntake,linearMotor);
+        MotorMethods MethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive,distanceSensor);
+        ArmMethods armMethodObj = new ArmMethods(armMotor, angleIntake, wheelIntake);
         MethodObj.SetDirectionForward();
         MethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         // ########################################################################################
@@ -116,7 +116,7 @@ public class RightAutonomous extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
-        MethodObj.timedMotorMove(70,-0.3,0,0);
+        MethodObj.timedMotorMove(70,-0.3,0,0,false);
         sleep(300);
         String marker = "None";
         boolean found = false;
@@ -126,10 +126,10 @@ public class RightAutonomous extends LinearOpMode {
             marker = "Center";
             found = true;
             //turn slightly right:
-            MethodObj.timedMotorMove(110,0,0,0.3);
+            MethodObj.timedMotorMove(110,0,0,0.3,false);
             sleep(400);
             //Move forward to stripe:
-            MethodObj.timedMotorMove(600,-0.2,0,0.0);
+            MethodObj.timedMotorMove(600,-0.2,0,0.0,false);
             //Deposits Pixel on stripe (Intake System):
             armMethodObj.intakeAuto(1,5000);
             sleep(200);
@@ -168,9 +168,9 @@ public class RightAutonomous extends LinearOpMode {
             //Moves to the left stripe and places down the pixel (Only runs if the object was found during the scanning period):
             if (marker == "right"){
                 //Moves the robot to the stripe:
-                MethodObj.timedMotorMove(70,0,0,0.2);
+                MethodObj.timedMotorMove(70,0,0,0.2,false);
                 sleep(300);
-                MethodObj.timedMotorMove(1000,-0.3,0,0.0);
+                MethodObj.timedMotorMove(1000,-0.3,0,0.0,false);
                 sleep(400);
                 //Deposits pixel on stripe (Intake System):
                 sleep(200);
@@ -180,25 +180,25 @@ public class RightAutonomous extends LinearOpMode {
                 sleep(200);
                 armMethodObj.intakeAuto(0,5000);
                 //Moves the robot back to the starting position:
-                MethodObj.timedMotorMove(1000,0.3,0,0.0);
+                MethodObj.timedMotorMove(1000,0.3,0,0.0,false);
                 sleep(400);
                 wheelIntake.setPosition(0.5);
                 sleep(200);
             }
             //Turns the robot back to the starting direction:
-            MethodObj.timedMotorMove(70,0,0,-0.2);
+            MethodObj.timedMotorMove(70,0,0,-0.2,false);
             sleep(200);
-            MethodObj.timedMotorMove((int)timeTurned,0.0,0,-0.2);
+            MethodObj.timedMotorMove((int)timeTurned,0.0,0,-0.2,false);
             sleep(400);
         }
         //Runs if the object has not been found on both the center and left lines:
         if (!found) {
             marker = "left";
             //Turns the robot to the right:
-            MethodObj.timedMotorMove(300,0.0,0,-0.2);
+            MethodObj.timedMotorMove(300,0.0,0,-0.2,false);
             sleep(400);
             //Moves the robot to the stripe:
-            MethodObj.timedMotorMove(900,-0.3,0,0.0);
+            MethodObj.timedMotorMove(900,-0.3,0,0.0,false);
             //Deposits pixel on stripe (Intake System):
             armMethodObj.intakeAuto(1,5000);
             sleep(200);
@@ -207,10 +207,10 @@ public class RightAutonomous extends LinearOpMode {
             armMethodObj.intakeAuto(0,5000);
             sleep(200);
             //Moves the robot back to the starting position:
-            MethodObj.timedMotorMove(900,0.3,0,0.0);
+            MethodObj.timedMotorMove(900,0.3,0,0.0,false);
             sleep(200);
             //Moves the robot back to the starting direction:
-            MethodObj.timedMotorMove(300,0.0,0,0.2);
+            MethodObj.timedMotorMove(300,0.0,0,0.2,false);
             sleep(400);
             wheelIntake.setPosition(0.5);
             sleep(200);

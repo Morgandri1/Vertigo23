@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
@@ -106,6 +107,7 @@ public class MainCode extends LinearOpMode {
     Servo angleIntake = null;
     Servo wheelIntake=null;
     DcMotor linearMotor = null;
+    DistanceSensor distanceSensor;
     int armStage=2;
     int none=0;
     int active=1;
@@ -129,9 +131,9 @@ public class MainCode extends LinearOpMode {
         armMotor = hardwareMap.get(DcMotor.class, "am1");
         angleIntake = hardwareMap.get(Servo.class,"servoangle");
         wheelIntake = hardwareMap.get(Servo.class,"servowheel");
-        linearMotor = hardwareMap.get(DcMotor.class, "am2");
-        MotorMethods MotorMethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
-        ArmMethods armMethodObj = new ArmMethods(armMotor,angleIntake,wheelIntake,linearMotor);
+        //linearMotor = hardwareMap.get(DcMotor.class, "am2");
+        MotorMethods MotorMethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive,distanceSensor);
+        ArmMethods armMethodObj = new ArmMethods(armMotor,angleIntake,wheelIntake);
         MotorMethodObj.SetDirectionBackwards();
         MotorMethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         // ########################################################################################

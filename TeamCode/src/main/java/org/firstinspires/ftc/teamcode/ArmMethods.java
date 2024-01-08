@@ -15,9 +15,8 @@ public class ArmMethods extends LinearOpMode{
 
     @Override
     public void runOpMode(){}
-    public ArmMethods(DcMotor mainArmMotor, Servo angle, Servo wheel,DcMotor linear){
+    public ArmMethods(DcMotor mainArmMotor, Servo angle, Servo wheel){
         armMotor=mainArmMotor;
-        linearMotor = linear;
         armMotor.setDirection(DcMotor.Direction.FORWARD);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

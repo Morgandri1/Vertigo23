@@ -2,7 +2,10 @@ package org.firstinspires.ftc.teamcode;
 
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 class MotorMethods{
     private ElapsedTime runtime = new ElapsedTime();
@@ -10,12 +13,13 @@ class MotorMethods{
     private DcMotor leftBackDrive;
     private DcMotor rightFrontDrive;
     private DcMotor rightBackDrive;
-    public MotorMethods(DcMotor leftFront, DcMotor rightFront,DcMotor leftBack,DcMotor rightBack){
+    private DistanceSensor distanceSensor;
+    public MotorMethods(DcMotor leftFront, DcMotor rightFront,DcMotor leftBack,DcMotor rightBack, DistanceSensor DSensor){
         leftFrontDrive = leftFront;
         leftBackDrive = leftBack;
         rightFrontDrive = rightFront;
         rightBackDrive = rightBack;
-
+        distanceSensor = DSensor;
     }
     public void move(double axial, double lateral, double yaw){
         double max;
@@ -71,8 +75,20 @@ class MotorMethods{
     }
 
     //This method moves the robot for a set amount of time depending on the calls' arguments:
-    public void timedMotorMove(double time, double axial, double lateral, double yaw) {
-        for (double startTime = runtime.milliseconds(); runtime.milliseconds() - startTime < time; ) {move(axial, lateral, yaw);}
+    public void timedMotorMove(double time, double axial, double lateral, double yaw, boolean sensor) {
+        double pauseTime = 0;
+        for (double startTime = runtime.milliseconds(); runtime.milliseconds() - startTime-pauseTime < time; ) {
+            move(axial, lateral, yaw);
+            if (sensor) {
+                if (distanceSensor.getDistance(DistanceUnit.CM) < 10) {
+                    double startPause = runtime.milliseconds();
+                    while (distanceSensor.getDistance(DistanceUnit.CM) < 10) {
+                        move(0, 0, 0);
+                    }
+                    pauseTime += runtime.milliseconds() - startPause;
+                }
+            }
+        }
         move(0,0,0);
     }
     //timedMotorMove(1000,1.0,0,0);
