@@ -129,25 +129,22 @@ public class RightAutonomous extends LinearOpMode {
             MethodObj.timedMotorMove(110,0,0,0.3,false);
             sleep(400);
             //Move forward to stripe:
-            MethodObj.timedMotorMove(600,-0.2,0,0.0,false);
+            MethodObj.timedMotorMove(1600,-0.2,0,0.0,false);
             //Deposits Pixel on stripe (Intake System):
-            armMethodObj.intakeAuto(1,5000);
+            armMethodObj.intakeAuto(3,5000);
             sleep(200);
-            for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
+            for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.9);}
             sleep(200);
             armMethodObj.intakeAuto(0,5000);
             sleep(200);
             wheelIntake.setPosition(0.5);
             sleep(200);
-            /*
             //Moves back to the start position:
-            MethodObj.timedMotorMove(700,0.2,0,0.0);
+            MethodObj.timedMotorMove(1600,0.2,0,0.0,false);
             sleep(400);
             //Turns the robot back to the starting direction:
-            MethodObj.timedMotorMove(130,0.0,0,-0.3);
+            MethodObj.timedMotorMove(130,0.0,0,-0.3,false);
             sleep(200);
-            sleep(200);
-             */
         }
         if (!found) {
             //Turns left until it finds the object or has completed the search (Scanning period):
@@ -174,7 +171,7 @@ public class RightAutonomous extends LinearOpMode {
                 sleep(400);
                 //Deposits pixel on stripe (Intake System):
                 sleep(200);
-                armMethodObj.intakeAuto(1,5000);
+                armMethodObj.intakeAuto(3,5000);
                 sleep(200);
                 for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
                 sleep(200);

@@ -98,19 +98,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class MainCode extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
-    private ElapsedTime runtime = new ElapsedTime();
-    DcMotor leftFrontDrive = null;
-    DcMotor leftBackDrive = null;
-    DcMotor rightFrontDrive = null;
-    DcMotor rightBackDrive = null;
-    DcMotor armMotor = null;
-    Servo angleIntake = null;
-    Servo wheelIntake=null;
-    Servo droneServo;
-    DcMotor linearMotor = null;
-    DistanceSensor distanceSensor;
     @Override
     public void runOpMode() {
+        ElapsedTime runtime = new ElapsedTime();
+        DcMotor leftFrontDrive;
+        DcMotor leftBackDrive = null;
+        DcMotor rightFrontDrive = null;
+        DcMotor rightBackDrive = null;
+        DcMotor armMotor = null;
+        Servo angleIntake = null;
+        Servo wheelIntake=null;
+        //Servo droneServo;
+        DcMotor linearMotor = null;
+        DistanceSensor distanceSensor;
         int armStage = 2;
         int none = 0;
         int active = 1;
@@ -131,7 +131,8 @@ public class MainCode extends LinearOpMode {
         armMotor = hardwareMap.get(DcMotor.class, "am1");
         angleIntake = hardwareMap.get(Servo.class, "servoangle");
         wheelIntake = hardwareMap.get(Servo.class, "servowheel");
-        droneServo = hardwareMap.get(Servo.class, "servodrone");
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "DS");
+        //droneServo = hardwareMap.get(Servo.class, "servodrone");
         //linearMotor = hardwareMap.get(DcMotor.class, "am2");
         MotorMethods MotorMethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive, distanceSensor);
         ArmMethods armMethodObj = new ArmMethods(armMotor, angleIntake, wheelIntake);
@@ -233,10 +234,10 @@ public class MainCode extends LinearOpMode {
             }
             //Drone code:
             //position ratio may need to be changed (current is 5)
-            double droneStartPos = droneServo.getPosition() / 5;
+            //double droneStartPos = droneServo.getPosition() / 5;
             if (gamepad2.start) {
                 //50 degrees is the degree estimate for drone servo to move to start launch, can be changed later.
-                droneServo.setPosition(droneStartPos + 0.15);
+                //droneServo.setPosition(droneStartPos + 0.15);
             }
             //Arm pre-defined positions code / Improved arm code:
             //Variable armStage is not used in the code below currently, it might be used in the future to be compatible with the original arm code

@@ -61,7 +61,7 @@ public class ArmMethods extends LinearOpMode{
         else if (position == 3){
             for (double time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;){
                 setArmDegree(15);
-                angleIntake.setPosition(0.12);
+                angleIntake.setPosition(0.15);
                 sleep(2);
             }
         }

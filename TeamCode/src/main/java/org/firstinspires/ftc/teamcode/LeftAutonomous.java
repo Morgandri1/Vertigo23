@@ -135,7 +135,7 @@ public class LeftAutonomous extends LinearOpMode {
                 //Move forward to stripe:
                 MethodObj.timedMotorMove(600,-0.2,0,0.0,false);
                 //Deposits Pixel on stripe (Intake System):
-                //armMethodObj.intakeAuto(1,5000);
+                //armMethodObj.intakeAuto(3,5000);
                 sleep(200);
                 //for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
                 sleep(200);
@@ -173,7 +173,7 @@ public class LeftAutonomous extends LinearOpMode {
                     MethodObj.timedMotorMove(900,-0.3,0,0.0,false);
                     sleep(400);
                     //Deposits pixel on stripe (Intake System):
-                    //armMethodObj.intakeAuto(1,5000);
+                    //armMethodObj.intakeAuto(3,5000);
                     sleep(200);
                     //for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
                     sleep(200);
@@ -204,7 +204,7 @@ public class LeftAutonomous extends LinearOpMode {
                 sleep(200);
                 //for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
                 sleep(200);
-                //armMethodObj.intakeAuto(0,5000);
+                armMethodObj.intakeAuto(0,5000);
                 sleep(200);
                 //Moves the robot back to the starting position:
                 MethodObj.timedMotorMove(900,0.3,0,0.0,false);
