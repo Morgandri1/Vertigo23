@@ -160,7 +160,6 @@ public class MainCode extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
 
             if ((gamepad1.left_trigger < 0.5 && gamepad1.right_trigger < 0.5) || (gamepad1.left_trigger > 0.5 && gamepad1.right_trigger > 0.5)) {
@@ -243,19 +242,20 @@ public class MainCode extends LinearOpMode {
             //Variable armStage is not used in the code below currently, it might be used in the future to be compatible with the original arm code
             //Full forward (for pixel intake)
             if (gamepad2.y) {
-                armMethodObj.intakeAuto(1, 2000);
+                armMethodObj.intakeAuto(1, 3000);
             }
             //Upright
-            if (gamepad2.b) {
-                armMethodObj.intakeAuto(2, 2000);
+            if (gamepad2.x || gamepad2.dpad_up) {
+                armMethodObj.intakeAuto(2, 3000);
+                sleep(200);
             }
             //Resting
             if (gamepad2.a) {
-                armMethodObj.intakeAuto(0, 2000);
+                armMethodObj.intakeAuto(0, 3000);
             }
             //TBD
-            if(gamepad2.x){
-                //Add code for x button here
+            if(gamepad2.b){
+                armMethodObj.intakeAuto(3,3000);
             }
             //Sends data to the driver:
             telemetry.addData("Armstage", armStage);

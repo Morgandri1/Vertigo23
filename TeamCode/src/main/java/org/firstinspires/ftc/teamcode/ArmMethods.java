@@ -11,7 +11,7 @@ public class ArmMethods extends LinearOpMode{
     private DcMotor linearMotor;
     private int fullRatio=5;
 
-    int offset =-252;
+    int offset = 0;
 
     @Override
     public void runOpMode(){}
@@ -52,8 +52,8 @@ public class ArmMethods extends LinearOpMode{
         //Upright Position:
         else if (position == 2){
             for(double time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;) {
-                setArmDegree(100);
-                angleIntake.setPosition(100-Math.round(getArmDegree()));
+                setArmDegree(170);
+                angleIntake.setPosition(0.15);
                 sleep(2);
             }
         }
