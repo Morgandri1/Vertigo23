@@ -37,37 +37,41 @@ public class allTest extends LinearOpMode {
         double lateral = 0.0;
         double yaw = 0.0;
         double driveMultiplier = 0.5;
-        boolean active = true;
         int changePos = -1;
         double stickOffset = 0.0;
         double continuousOffset = 0.0;
         double currentPos = 0.0;
         double motorOffset = 0.0;
-        //Repeatedly runs after the play button is pressed:
+        final double startingDegree = 0.98;
+        //Array for armmotor and angleIntake for positions 0-3:
+        //Position 0, have the correct positions:
+        double[][] armPositions = {{0,startingDegree},{0,0.4},{170,0.95},{20,0.32}};
+        final int SET_ARM_MOTOR = 0;
+        final int SET_ARM_SERVO = 1;
         waitForStart();
         runtime.reset();
+        //Repeatedly runs after the play button is pressed:
         while(opModeIsActive()) {
             //Pressing start on either of the controllers will stop the code:
             if (gamepad1.back || gamepad2.back){terminateOpModeNow();}
             //Pressing start will stop the robot and cease any other functions:
             while(gamepad1.start || gamepad2.start) {
-                active = false;
                 MMO.move(0,0,0);
             }
             if (gamepad2.dpad_left){changePos = -1;}
-            //Full Back
+            //Full Back (To starting position):
             if (gamepad2.a) {
                 changePos = 0;
             }
-            //Full forward to intake pixels
+            //Full forward to intake pixels:
             if (gamepad2.b) {
                 changePos = 1;
             }
-            //Deposit pixels on Backboard
+            //Deposit pixels on Backboard:
             if (gamepad2.x || gamepad2.dpad_up) {
                 changePos = 2;
             }
-            //
+            //Deposit pixels on stripe:
             if (gamepad2.y) {
                 changePos = 3;
             }
@@ -89,14 +93,11 @@ public class allTest extends LinearOpMode {
             }
             if (gamepad1.dpad_down){MMO.timedMotorMove(1000,1,0,0,false);}
             if (gamepad1.dpad_up){MMO.timedMotorMove(1000,1,0,0,true);}
-            if (gamepad2.right_bumper){
-                for(double time = runtime.milliseconds();runtime.milliseconds()-time<2000 && !(gamepad1.start || gamepad2.start);){wheelIntake.setPosition(0.9);}
-            }
-            else if (gamepad2.left_bumper){
-                for(double time = runtime.milliseconds();runtime.milliseconds()-time<2000 && !(gamepad1.start || gamepad2.start);){wheelIntake.setPosition(0.1);}
-            }
-            if (gamepad2.right_trigger > 0.2f){motorOffset -= 0.1;}
-            if (gamepad2.left_trigger > 0.2f){motorOffset += 0.1;}
+            if (gamepad2.right_bumper){wheelIntake.setPosition(0.9);}
+            else if (gamepad2.left_bumper){wheelIntake.setPosition(0.1);}
+            else{wheelIntake.setPosition(0.5);}
+            if (gamepad2.right_trigger > 0.2f){motorOffset -= 0.5;}
+            if (gamepad2.left_trigger > 0.2f){motorOffset += 0.5;}
             axial = driveMultiplier * (-gamepad1.left_stick_y);  // Note: pushing stick forward gives negative value
             lateral = driveMultiplier * (gamepad1.left_stick_x);
             yaw = driveMultiplier * (-gamepad1.right_stick_x);
@@ -106,10 +107,7 @@ public class allTest extends LinearOpMode {
             else{stickOffset = 0.0;}
             if(gamepad2.right_stick_y < -0.2f){continuousOffset -= 0.003;}
             else if (gamepad2.right_stick_y > 0.2f){continuousOffset += 0.003;}
-            if(gamepad2.left_bumper){
-                if(changePos <= 2){changePos++;}
-                else{changePos = 0;}
-            }
+            /*
             if (changePos == 0){
                 AMO.setArmDegree(252 + (int)Math.floor(motorOffset));
                 currentPos = 0.03+stickOffset+continuousOffset;
@@ -130,14 +128,31 @@ public class allTest extends LinearOpMode {
                 currentPos = 0.15+stickOffset+continuousOffset;
                 angleIntake.setPosition(0.15+stickOffset + continuousOffset);
             }
-            driveMultiplier = 0.5;
-            if (gamepad1.left_trigger > 0.1f){driveMultiplier = driveMultiplier - 0.25;}
-            if (gamepad1.right_trigger > 0.1f){driveMultiplier = driveMultiplier + 0.25;}
+             */
+            /*
+            if (changePos == 2|| changePos == 0){
+                MMO.SetDirectionForward();
+            }
+            else{
+                MMO.SetDirectionBackwards();
+            }
+             */
+            //SET_ARM_MOTOR and SET_ARM_SERVO are constant variables set at the beginning of runOpMode()
+            if (changePos != -1) {
+                angleIntake.setPosition(armPositions[changePos][SET_ARM_SERVO] + stickOffset + continuousOffset);
+                AMO.setArmDegree((int) armPositions[changePos][SET_ARM_MOTOR] + (int) Math.floor(motorOffset));
+                currentPos = armPositions[changePos][SET_ARM_SERVO] + stickOffset + continuousOffset;
+            }
+            if (gamepad1.left_trigger > 0.1f){driveMultiplier = 0.25;}
+            else if (gamepad1.right_trigger > 0.1f){driveMultiplier = 1;}
+            else{driveMultiplier = 0.5;}
             telemetry.addData("Current arm motor position: ", AMO.getArmDegree());
             telemetry.addData("Current arm servo position: ", angleIntake.getPosition());
             telemetry.addData("Current arm servo position with var: ", currentPos);
             telemetry.addData("Current wheel position: ", wheelIntake.getPosition());
             telemetry.addData("Current centimeters from distance sensor: ", distanceSensor.getDistance(DistanceUnit.CM));
+            telemetry.addData("Current continous offset: ", continuousOffset);
+            telemetry.addData("Current stick offset", stickOffset);
             telemetry.update();
         }
     }

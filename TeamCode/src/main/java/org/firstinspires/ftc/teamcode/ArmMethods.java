@@ -33,37 +33,11 @@ public class ArmMethods extends LinearOpMode{
     }
     //This method is used to control the arm and intake system's position:
     public void intakeAuto(int position, int timeToMove) {
-        //Full forward (Position to intake pixels from ground):
-        if (position == 1){
-            for(double time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;) {
-                setArmDegree(0);
-                angleIntake.setPosition(0.1);
-                sleep(2);
-            }
-        }
-        //Full back (Standard/default position):
-        else if (position == 0){
-            for(double time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;) {
-                setArmDegree(252);
-                angleIntake.setPosition(0.03);
-                sleep(2);
-            }
-        }
-        //Upright Position:
-        else if (position == 2){
-            for(double time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;) {
-                setArmDegree(170);
-                angleIntake.setPosition(0.15);
-                sleep(2);
-            }
-        }
-        //Deposit pixel on stripe position (only needed for autonomous):
-        else if (position == 3){
-            for (double time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;){
-                setArmDegree(15);
-                angleIntake.setPosition(0.15);
-                sleep(2);
-            }
+        //Position 0 is starting position, Position 1 is to intake pixels, Position 2 is to go to the backboard, and position 3 is to put a pixel on the stripe:
+        double[][] armPositions = {{0,0.98},{0,0.4},{170,0.95},{20,0.32}};
+        for (time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;){
+            angleIntake.setPosition(armPositions[position][1]);
+            setArmDegree((int)armPositions[position][0]);
         }
         armMotor.setPower(0);
     }
