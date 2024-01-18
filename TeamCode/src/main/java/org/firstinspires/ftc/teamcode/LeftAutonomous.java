@@ -65,7 +65,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Left Side Autonomous", group="Robot")
+@Autonomous(name="Left Autonomous", group="Robot")
 //This code should be run when the robot starts on the left side of the truss:
 public class LeftAutonomous extends LinearOpMode {
 
@@ -123,37 +123,51 @@ public class LeftAutonomous extends LinearOpMode {
         String marker = "None";
         boolean found = false;
         double timeTurned = 0.0;
-        MethodObj.timedMotorMove(80,-0.3,0,0,false);
-        sleep(300);
+        double[][] armPositions = {{0,0.90},{0,0.4},{170,0.95},{25,0.20}};
+        MethodObj.timedMotorMove(70,-0.3,0,0,false);
+        MethodObj.timedMotorMove(20,0,0,0.2,false);
+        sleep(100);
         double distance = distanceSensor.getDistance(DistanceUnit.CM);
-            if (distanceSensor.getDistance(DistanceUnit.CM) < 90) {
+        if (distanceSensor.getDistance(DistanceUnit.CM) < 90) {
                 marker = "Center";
                 found = true;
                 //turn slightly right:
-                MethodObj.timedMotorMove(110,0,0,0.3,false);
+                TMM_With_Arm(100,0,0,0.3,false,3,MethodObj,armMethodObj);
                 sleep(400);
                 //Move forward to stripe:
-                MethodObj.timedMotorMove(600,-0.2,0,0.0,false);
+                TMM_With_Arm(2000,-0.2,0,0.0,false,3,MethodObj,armMethodObj);
+                sleep(400);
                 //Deposits Pixel on stripe (Intake System):
-                //armMethodObj.intakeAuto(3,5000);
+                for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){
+                    angleIntake.setPosition(armPositions[3][1]);
+                    armMethodObj.setArmDegree((int)armPositions[3][0]);
+                    wheelIntake.setPosition(0.1);
+                    telemetry.addData("Current angle position: ", angleIntake.getPosition());
+                    telemetry.update();
+                }
+                wheelIntake.setPosition(0.5);
+                for (double time = runtime.milliseconds(); runtime.milliseconds()-time < 2000;){
+                    angleIntake.setPosition(armPositions[0][1]);
+                    telemetry.addData("Current angle position: ", angleIntake.getPosition());
+                    telemetry.update();
+                }
                 sleep(200);
-                //for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
-                sleep(200);
-                //armMethodObj.intakeAuto(0,5000);
-                sleep(200);
-                //wheelIntake.setPosition(0.5);
+                for (double time = runtime.milliseconds(); runtime.milliseconds()-time < 3000;){armMethodObj.setArmDegree((int)armPositions[0][0]);}
                 sleep(200);
                 //Moves back to the start position:
-                MethodObj.timedMotorMove(700,0.2,0,0.0,false);
+                TMM_With_Arm(2000,0.2,0,0.0,false,0,MethodObj,armMethodObj);
                 sleep(400);
                 //Turns the robot back to the starting direction:
-                MethodObj.timedMotorMove(130,0.0,0,-0.3,false);
+                TMM_With_Arm(100,0.0,0,-0.3,false,0,MethodObj,armMethodObj);
+                sleep(200);
             }
             if (!found) {
                 //Turns left until it finds the object or has completed the search (Scanning period):
                 double firstTurned = runtime.milliseconds();
                 for (double time = firstTurned; runtime.milliseconds()-time<800; ) {
                     MethodObj.move(0, 0, -0.2);
+                    angleIntake.setPosition(armPositions[3][1]);
+                    armMethodObj.setArmDegree((int) armPositions[3][0]);
                     telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
                     telemetry.update();
                     timeTurned = runtime.milliseconds()-firstTurned;
@@ -168,22 +182,31 @@ public class LeftAutonomous extends LinearOpMode {
                 }
                 //Moves to the left stripe and places down the pixel (Only runs if the object was found during the scanning period):
                 if (marker == "left"){
-                    MethodObj.timedMotorMove(200,0,0,-0.2,false);
+                    TMM_With_Arm(200,0,0,-0.2,false,3,MethodObj,armMethodObj);
                     //Moves the robot to the stripe:
-                    MethodObj.timedMotorMove(900,-0.3,0,0.0,false);
+                    TMM_With_Arm(900,-0.3,0,0.0,false,3,MethodObj,armMethodObj);
                     sleep(400);
                     //Deposits pixel on stripe (Intake System):
-                    //armMethodObj.intakeAuto(3,5000);
+                    for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){
+                        angleIntake.setPosition(armPositions[3][1]);
+                        armMethodObj.setArmDegree((int)armPositions[3][0]);
+                        wheelIntake.setPosition(0.1);
+                        telemetry.addData("Current angle position: ", angleIntake.getPosition());
+                        telemetry.update();
+                    }
+                    wheelIntake.setPosition(0.5);
+                    for (double time = runtime.milliseconds(); runtime.milliseconds()-time < 2000;){
+                        angleIntake.setPosition(armPositions[0][1]);
+                        telemetry.addData("Current angle position: ", angleIntake.getPosition());
+                        telemetry.update();
+                    }
                     sleep(200);
                     //for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
                     sleep(200);
-                    //armMethodObj.intakeAuto(0,5000);
-                    sleep(200);
-                    //wheelIntake.setPosition(0.5);
                     //Moves the robot back to the starting position:
-                    MethodObj.timedMotorMove(900,0.3,0,0.0,false);
+                    TMM_With_Arm(900,0.3,0,0.0,false,0,MethodObj,armMethodObj);
                     sleep(200);
-                    MethodObj.timedMotorMove(200,0,0,0.2,false);
+                    TMM_With_Arm(200,0,0,0.2,false,0,MethodObj,armMethodObj);
                     sleep(300);
                 }
                 //Turns the robot back to the starting direction:
@@ -194,26 +217,34 @@ public class LeftAutonomous extends LinearOpMode {
             if (!found) {
                 marker = "right";
                 //Turns the robot to the right:
-                MethodObj.timedMotorMove(500,0.0,0,0.2,false);
+                TMM_With_Arm(500,0.0,0,0.2,false,3,MethodObj,armMethodObj);
                 sleep(300);
                 //Moves the robot to the stripe:
-                MethodObj.timedMotorMove(900,-0.3,0,0.0,false);
+                TMM_With_Arm(900,-0.3,0,0.0,false,3,MethodObj,armMethodObj);
                 sleep(300);
                 //Deposits pixel on stripe (Intake System):
-                armMethodObj.intakeAuto(3,2000);
+                for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){
+                    angleIntake.setPosition(armPositions[3][1]);
+                    armMethodObj.setArmDegree((int)armPositions[3][0]);
+                    wheelIntake.setPosition(0.1);
+                    telemetry.addData("Current angle position: ", angleIntake.getPosition());
+                    telemetry.update();
+                }
+                wheelIntake.setPosition(0.5);
+                for (double time = runtime.milliseconds(); runtime.milliseconds()-time < 2000;){
+                    angleIntake.setPosition(armPositions[0][1]);
+                    telemetry.addData("Current angle position: ", angleIntake.getPosition());
+                    telemetry.update();
+                }
                 sleep(200);
                 //for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
                 sleep(200);
-                armMethodObj.intakeAuto(0,5000);
-                sleep(200);
                 //Moves the robot back to the starting position:
-                MethodObj.timedMotorMove(900,0.3,0,0.0,false);
+                TMM_With_Arm(900,0.3,0,0.0,false,0,MethodObj,armMethodObj);
                 sleep(200);
                 //Moves the robot back to the starting direction:
-                MethodObj.timedMotorMove(500,0.0,0,-0.2,false);
+                TMM_With_Arm(500,0.0,0,-0.2,false,0,MethodObj,armMethodObj);
                 sleep(200);
-                //wheelIntake.setPosition(0.5);
-                sleep(300);
             }
             //MethodObj.timedMotorMove(8000,0,0,0.3);
             //(Left side edition) Goes from starting position to the board, puts the pixel on the board, and then parks in the parking area:
@@ -226,6 +257,7 @@ public class LeftAutonomous extends LinearOpMode {
             MethodObj.timedMotorMove(8000,0.3,0,0);
             sleep(200);
              */
+            /*
             MethodObj.timedMotorMove(70,0.3,0,0,true);
             sleep(200);
             MethodObj.timedMotorMove(300,0,0,0.3,true);
@@ -254,6 +286,7 @@ public class LeftAutonomous extends LinearOpMode {
             sleep(200);
             MethodObj.timedMotorMove(200,0.3,0,0,true);
             sleep(200);
+             */
             //Outputs information until the end of the Autonomous Period:
             while (opModeIsActive()) {
                 telemetry.addData("First Distance: ", distance);
@@ -279,5 +312,18 @@ public class LeftAutonomous extends LinearOpMode {
         }
         MethodObj.move(0,0,0);
          */
+    }
+    private void TMM_With_Arm(double time, double axial, double lateral, double yaw, boolean sensor, int position, MotorMethods motorMethodObject, ArmMethods armMethodObject){
+        double[][] armPositions = {{0,0.9},{0,0.4},{170,0.95},{20,0.32}};
+        MotorMethods MethodObj = motorMethodObject;
+        ArmMethods armMethodObj = armMethodObject;
+        for (double startTime = runtime.milliseconds(); runtime.milliseconds()-startTime<time && opModeIsActive();){
+            MethodObj.move(axial,lateral,yaw);
+            if (position != 1){
+                angleIntake.setPosition(armPositions[position][1]);
+                armMethodObj.setArmDegree((int) armPositions[position][0]);
+            }
+        }
+        MethodObj.move(0,0,0);
     }
 }
