@@ -1,20 +1,16 @@
 package org.firstinspires.ftc.teamcode;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-public class ArmMethods extends LinearOpMode{
+public class ArmMethods{
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor armMotor;
     private Servo angleIntake;
     private Servo wheelIntake;
-    private int fullRatio=5;
     private HardwareMap hardwareMap;
-    int offset = 0;
-
-    @Override
-    public void runOpMode(){}
+    private static int offset = 0;
+    private static int fullRatio=5;
     public ArmMethods(HardwareMap hardwareMapObj){
         hardwareMap = hardwareMapObj;
         armMotor = hardwareMap.get(DcMotor.class,"am1");
@@ -38,7 +34,7 @@ public class ArmMethods extends LinearOpMode{
         //Position 0 is starting position, Position 1 is to intake pixels, Position 2 is to go to the backboard, and position 3 is to put a pixel on the stripe:
         double[][] armPositions = {{0,0.98},{0,0.4},{170,0.95},{20,0.32}};
         //Other functions will cease during the usage of this loop/task:
-        for (time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;){
+        for (double time = runtime.milliseconds(); runtime.milliseconds()-time<timeToMove;){
             angleIntake.setPosition(armPositions[position][1]);
             setArmDegree((int)armPositions[position][0]);
         }

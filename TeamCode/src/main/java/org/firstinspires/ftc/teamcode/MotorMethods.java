@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -23,6 +24,7 @@ class MotorMethods{
         rightBackDrive = hardwareMap.get(DcMotor.class,"BR");
         distanceSensor = hardwareMap.get(DistanceSensor.class,"DS");
     }
+    //Takes axial, lateral, and yaw and moves/puts power to the wheels depending on those values:
     public void move(double axial, double lateral, double yaw){
         double max;
         double leftFrontPower  = axial + lateral + yaw;
@@ -49,26 +51,29 @@ class MotorMethods{
         rightFrontDrive.setPower(rightFrontPower);
         rightBackDrive.setPower(rightBackPower);
     }
+    //Sets the wheels to move forwards:
     public void SetDirectionForward(){
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
     }
+    //Sets the wheels to move backwards:
     public void SetDirectionBackwards(){
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
     }
-    public void setZeroBehaviorAll(DcMotor.ZeroPowerBehavior thing) {
-        leftFrontDrive.setZeroPowerBehavior(thing);
-        leftBackDrive.setZeroPowerBehavior(thing);
-        rightFrontDrive.setZeroPowerBehavior(thing);
-        rightBackDrive.setZeroPowerBehavior(thing);
+    //Brakes the wheels if the power is set to 0 in order to stop slipping:
+    public void setZeroBehaviorAll(DcMotor.ZeroPowerBehavior DcMotor_ZeroPowerBehavior_BRAKE) {
+        leftFrontDrive.setZeroPowerBehavior(DcMotor_ZeroPowerBehavior_BRAKE);
+        leftBackDrive.setZeroPowerBehavior(DcMotor_ZeroPowerBehavior_BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor_ZeroPowerBehavior_BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor_ZeroPowerBehavior_BRAKE);
     }
 
-    //This method moves the robot for a set amount of time depending on the calls' arguments:
+    //This method moves the robot for a set amount of time depending on the call's arguments:
     public void timedMotorMove(double time, double axial, double lateral, double yaw, boolean sensor) {
         double pauseTime = 0;
         for (double startTime = runtime.milliseconds(); runtime.milliseconds() - startTime-pauseTime < time; ) {
@@ -85,6 +90,18 @@ class MotorMethods{
         }
         move(0,0,0);
     }
-    //timedMotorMove(1000,1.0,0,0);
+    //timedMotorMove but you can also specify where the arm should be while moving:
+    public void TMM_With_Arm(double time, double axial, double lateral, double yaw, int position, MotorMethods motorMethodObject, ArmMethods armMethodObject){
+        double[][] armPositions = {{0,0.9},{0,0.4},{170,0.95},{20,0.32}};
+        ArmMethods armMethodObj = armMethodObject;
+        Servo angleIntake = hardwareMap.get(Servo.class,"servoangle");
+        for (double startTime = runtime.milliseconds(); runtime.milliseconds()-startTime<time;){
+            move(axial,lateral,yaw);
+            if (position != 1){
+                angleIntake.setPosition(armPositions[position][1]);
+                armMethodObj.setArmDegree((int) armPositions[position][0]);
+            }
+        }
+        move(0,0,0);
+    }
 }
-
