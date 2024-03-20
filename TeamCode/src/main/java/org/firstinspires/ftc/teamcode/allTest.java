@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -20,17 +21,13 @@ public class allTest extends LinearOpMode {
         Servo wheelIntake;
         Servo angleIntake;
         DistanceSensor distanceSensor;
-        leftFrontDrive = hardwareMap.get(DcMotor.class,"FL");
-        leftBackDrive = hardwareMap.get(DcMotor.class,"BL");
-        rightFrontDrive = hardwareMap.get(DcMotor.class,"FR");
-        rightBackDrive = hardwareMap.get(DcMotor.class,"BR");
         armMotor = hardwareMap.get(DcMotor.class,"am1");
         wheelIntake = hardwareMap.get(Servo.class,"servowheel");
         angleIntake = hardwareMap.get(Servo.class,"servoangle");
         distanceSensor = hardwareMap.get(DistanceSensor.class,"DS");
         ElapsedTime runtime = new ElapsedTime();
-        ArmMethods AMO = new ArmMethods(armMotor,angleIntake,wheelIntake);
-        MotorMethods MMO = new MotorMethods(leftFrontDrive,rightFrontDrive,leftBackDrive,rightBackDrive,distanceSensor);
+        ArmMethods AMO = new ArmMethods(hardwareMap);
+        MotorMethods MMO = new MotorMethods(hardwareMap);
         MMO.SetDirectionBackwards();
         MMO.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         double axial = 0.0;

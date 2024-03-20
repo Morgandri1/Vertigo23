@@ -99,8 +99,8 @@ public class LeftAutonomous extends LinearOpMode {
         wheelIntake = hardwareMap.get(Servo.class, "servowheel");
         //linearMotor = hardwareMap.get(DcMotor.class,"am2");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "DS");
-        MotorMethods MethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive,distanceSensor);
-        ArmMethods armMethodObj = new ArmMethods(armMotor, angleIntake, wheelIntake);
+        MotorMethods MethodObj = new MotorMethods(hardwareMap);
+        ArmMethods armMethodObj = new ArmMethods(hardwareMap);
         MethodObj.SetDirectionForward();
         MethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         // ########################################################################################

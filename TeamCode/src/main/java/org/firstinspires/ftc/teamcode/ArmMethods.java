@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 public class ArmMethods extends LinearOpMode{
@@ -15,13 +16,13 @@ public class ArmMethods extends LinearOpMode{
 
     @Override
     public void runOpMode(){}
-    public ArmMethods(DcMotor mainArmMotor, Servo angle, Servo wheel){
-        armMotor=mainArmMotor;
+    public ArmMethods(HardwareMap hardwareMap){
+        armMotor = hardwareMap.get(DcMotor.class,"am1");
         armMotor.setDirection(DcMotor.Direction.FORWARD);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        angleIntake=angle;
-        wheelIntake=wheel;
+        wheelIntake = hardwareMap.get(Servo.class,"servowheel");
+        angleIntake = hardwareMap.get(Servo.class,"servoangle");
     }
     public void setArmDegree(int degree){
         armMotor.setTargetPosition((degree+offset)*fullRatio);

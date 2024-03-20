@@ -118,7 +118,7 @@ public class OmniDriveMod extends LinearOpMode {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "BL");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
-        MotorMethods MethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive,distanceSensor);
+        MotorMethods MethodObj = new MotorMethods(hardwareMap);
         MethodObj.SetDirectionForward();
 
         MethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);

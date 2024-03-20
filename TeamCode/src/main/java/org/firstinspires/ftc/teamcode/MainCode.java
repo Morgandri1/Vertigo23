@@ -134,8 +134,8 @@ public class MainCode extends LinearOpMode {
         distanceSensor = hardwareMap.get(DistanceSensor.class, "DS");
         //droneServo = hardwareMap.get(Servo.class, "servodrone");
         //linearMotor = hardwareMap.get(DcMotor.class, "am2");
-        MotorMethods MotorMethodObj = new MotorMethods(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive, distanceSensor);
-        ArmMethods armMethodObj = new ArmMethods(armMotor, angleIntake, wheelIntake);
+        MotorMethods MotorMethodObj = new MotorMethods(hardwareMap);
+        ArmMethods armMethodObj = new ArmMethods(hardwareMap);
         MotorMethodObj.SetDirectionBackwards();
         MotorMethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
         // ########################################################################################

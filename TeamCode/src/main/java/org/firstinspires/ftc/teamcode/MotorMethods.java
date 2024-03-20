@@ -4,22 +4,26 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import android.content.Context;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 class MotorMethods{
     private ElapsedTime runtime = new ElapsedTime();
+    private static HardwareMap hardwaremap;
+    private static Context context;
     private DcMotor leftFrontDrive;
     private DcMotor leftBackDrive;
     private DcMotor rightFrontDrive;
     private DcMotor rightBackDrive;
     private DistanceSensor distanceSensor;
-    public MotorMethods(DcMotor leftFront, DcMotor rightFront,DcMotor leftBack,DcMotor rightBack, DistanceSensor DSensor){
-        leftFrontDrive = leftFront;
-        leftBackDrive = leftBack;
-        rightFrontDrive = rightFront;
-        rightBackDrive = rightBack;
-        distanceSensor = DSensor;
+    public MotorMethods(HardwareMap hardwareMap){
+        leftFrontDrive = hardwareMap.get(DcMotor.class,"FL");
+        leftBackDrive = hardwareMap.get(DcMotor.class,"BL");
+        rightFrontDrive = hardwareMap.get(DcMotor.class,"FR");
+        rightBackDrive = hardwareMap.get(DcMotor.class,"BR");
+        distanceSensor = hardwareMap.get(DistanceSensor.class,"DS");
     }
     public void move(double axial, double lateral, double yaw){
         double max;
