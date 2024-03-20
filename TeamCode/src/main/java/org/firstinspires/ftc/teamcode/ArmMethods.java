@@ -6,11 +6,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 public class ArmMethods extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor armMotor;
-    private Servo angleIntake;
-    private Servo wheelIntake;
-    private DcMotor linearMotor;
-    private int fullRatio=5;
+    public DcMotor armMotor;
+    public Servo angleIntake;
+    public Servo wheelIntake;
+    private final int fullRatio=5;
 
     int offset = 0;
 
@@ -42,32 +41,9 @@ public class ArmMethods extends LinearOpMode{
         }
         armMotor.setPower(0);
     }
-    //Moves the linear slide to different positions depending on the state specified:
-    public void linearMove(int positionState){
-        if (positionState == 0){
-            for (double time = runtime.milliseconds();runtime.milliseconds()-time<5000;){
-                linearMotor.setPower(-0.5);
-            }
-            linearMotor.setPower(0);
-        }
-        else if (positionState == 1){
-            for (double time = runtime.milliseconds();runtime.milliseconds()-time<5000;){
-                linearMotor.setPower(0.5);
-            }
-            linearMotor.setPower(0);
-        }
-        else if (positionState == 2){
-            //Modify time and power to move to correct distance for autonomous:
-            for (double time = runtime.milliseconds();runtime.milliseconds()-time<5000;){
-                //Add code here
-            }
-            linearMotor.setPower(0);
-        }
-    }
     //Brakes the arm-motors whenever they have 0 power:
     public void setZeroBehaviorAll(){
         DcMotor.ZeroPowerBehavior brake = DcMotor.ZeroPowerBehavior.BRAKE;
         armMotor.setZeroPowerBehavior(brake);
-        linearMotor.setZeroPowerBehavior(brake);
     }
 }

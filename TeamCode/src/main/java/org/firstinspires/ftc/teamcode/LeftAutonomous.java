@@ -90,8 +90,8 @@ public class LeftAutonomous extends LinearOpMode {
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "FL");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "BL");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "FL");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "BL");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
         armMotor = hardwareMap.get(DcMotor.class, "am1");
@@ -99,10 +99,10 @@ public class LeftAutonomous extends LinearOpMode {
         wheelIntake = hardwareMap.get(Servo.class, "servowheel");
         //linearMotor = hardwareMap.get(DcMotor.class,"am2");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "DS");
-        MotorMethods MethodObj = new MotorMethods(hardwareMap);
-        ArmMethods armMethodObj = new ArmMethods(hardwareMap);
-        MethodObj.SetDirectionForward();
-        MethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
+        RobotMethods RMO = new RobotMethods(hardwareMap);
+        ArmMethods armRMO = new ArmMethods(hardwareMap);
+        RMO.SetDirectionForward();
+        RMO.setZeroBehaviorAll();
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
         // ########################################################################################
@@ -123,115 +123,81 @@ public class LeftAutonomous extends LinearOpMode {
         String marker = "None";
         boolean found = false;
         double timeTurned = 0.0;
-        double[][] armPositions = {{0,0.90},{0,0.4},{170,0.95},{25,0.20}};
-        MethodObj.timedMotorMove(70,-0.3,0,0,false);
-        MethodObj.timedMotorMove(20,0,0,0.2,false);
+        double[][] armPositions = {{0, 0.90}, {0, 0.4}, {170, 0.95}, {25, 0.20}};
+        RMO.timedMotorMove(70, -0.3, 0, 0, false);
+        RMO.timedMotorMove(20, 0, 0, 0.2, false);
         sleep(100);
         double distance = distanceSensor.getDistance(DistanceUnit.CM);
         if (distanceSensor.getDistance(DistanceUnit.CM) < 90) {
-                marker = "Center";
-                found = true;
-                //turn slightly right:
-                TMM_With_Arm(100,0,0,0.3,false,3,MethodObj,armMethodObj);
-                sleep(400);
-                //Move forward to stripe:
-                TMM_With_Arm(2000,-0.2,0,0.0,false,3,MethodObj,armMethodObj);
-                sleep(400);
-                //Deposits Pixel on stripe (Intake System):
-                for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){
-                    angleIntake.setPosition(armPositions[3][1]);
-                    armMethodObj.setArmDegree((int)armPositions[3][0]);
-                    wheelIntake.setPosition(0.1);
-                    telemetry.addData("Current angle position: ", angleIntake.getPosition());
-                    telemetry.update();
-                }
-                wheelIntake.setPosition(0.5);
-                for (double time = runtime.milliseconds(); runtime.milliseconds()-time < 2000;){
-                    angleIntake.setPosition(armPositions[0][1]);
-                    telemetry.addData("Current angle position: ", angleIntake.getPosition());
-                    telemetry.update();
-                }
-                sleep(200);
-                for (double time = runtime.milliseconds(); runtime.milliseconds()-time < 3000;){armMethodObj.setArmDegree((int)armPositions[0][0]);}
-                sleep(200);
-                //Moves back to the start position:
-                TMM_With_Arm(2000,0.2,0,0.0,false,0,MethodObj,armMethodObj);
-                sleep(400);
-                //Turns the robot back to the starting direction:
-                TMM_With_Arm(100,0.0,0,-0.3,false,0,MethodObj,armMethodObj);
-                sleep(200);
+            marker = "Center";
+            found = true;
+            //turn slightly right:
+            RMO.TMM_With_Arm(100, 0, 0, 0.3, false, 3);
+            sleep(400);
+            //Move forward to stripe:
+            RMO.TMM_With_Arm(2000, -0.2, 0, 0.0, false, 3);
+            sleep(400);
+            //Deposits Pixel on stripe (Intake System):
+            for (double time = runtime.milliseconds(); runtime.milliseconds() - time < 2000; ) {
+                angleIntake.setPosition(armPositions[3][1]);
+                armRMO.setArmDegree((int) armPositions[3][0]);
+                wheelIntake.setPosition(0.1);
+                telemetry.addData("Current angle position: ", angleIntake.getPosition());
+                telemetry.update();
             }
-            if (!found) {
-                //Turns left until it finds the object or has completed the search (Scanning period):
-                double firstTurned = runtime.milliseconds();
-                for (double time = firstTurned; runtime.milliseconds()-time<800; ) {
-                    MethodObj.move(0, 0, -0.2);
-                    angleIntake.setPosition(armPositions[3][1]);
-                    armMethodObj.setArmDegree((int) armPositions[3][0]);
-                    telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
-                    telemetry.update();
-                    timeTurned = runtime.milliseconds()-firstTurned;
-                    if (distanceSensor.getDistance(DistanceUnit.CM) <= 85) {
-                        timeTurned = runtime.milliseconds()-firstTurned;
-                        marker = "left";
-                        found = true;
-                        MethodObj.move(0, 0, 0.0);
-                        sleep(400);
-                        break;
-                    }
-                }
-                //Moves to the left stripe and places down the pixel (Only runs if the object was found during the scanning period):
-                if (marker == "left"){
-                    TMM_With_Arm(200,0,0,-0.2,false,3,MethodObj,armMethodObj);
-                    //Moves the robot to the stripe:
-                    TMM_With_Arm(900,-0.3,0,0.0,false,3,MethodObj,armMethodObj);
+            wheelIntake.setPosition(0.5);
+            for (double time = runtime.milliseconds(); runtime.milliseconds() - time < 2000; ) {
+                angleIntake.setPosition(armPositions[0][1]);
+                telemetry.addData("Current angle position: ", angleIntake.getPosition());
+                telemetry.update();
+            }
+            sleep(200);
+            for (double time = runtime.milliseconds(); runtime.milliseconds() - time < 3000; ) {
+                armRMO.setArmDegree((int) armPositions[0][0]);
+            }
+            sleep(200);
+            //Moves back to the start position:
+            RMO.TMM_With_Arm(2000, 0.2, 0, 0.0, false, 0);
+            sleep(400);
+            //Turns the robot back to the starting direction:
+            RMO.TMM_With_Arm(100, 0.0, 0, -0.3, false, 0);
+            sleep(200);
+        }
+        if (!found) {
+            //Turns left until it finds the object or has completed the search (Scanning period):
+            double firstTurned = runtime.milliseconds();
+            for (double time = firstTurned; runtime.milliseconds() - time < 800; ) {
+                RMO.move(0, 0, -0.2);
+                angleIntake.setPosition(armPositions[3][1]);
+                armRMO.setArmDegree((int) armPositions[3][0]);
+                telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
+                telemetry.update();
+                timeTurned = runtime.milliseconds() - firstTurned;
+                if (distanceSensor.getDistance(DistanceUnit.CM) <= 85) {
+                    timeTurned = runtime.milliseconds() - firstTurned;
+                    marker = "left";
+                    found = true;
+                    RMO.move(0, 0, 0.0);
                     sleep(400);
-                    //Deposits pixel on stripe (Intake System):
-                    for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){
-                        angleIntake.setPosition(armPositions[3][1]);
-                        armMethodObj.setArmDegree((int)armPositions[3][0]);
-                        wheelIntake.setPosition(0.1);
-                        telemetry.addData("Current angle position: ", angleIntake.getPosition());
-                        telemetry.update();
-                    }
-                    wheelIntake.setPosition(0.5);
-                    for (double time = runtime.milliseconds(); runtime.milliseconds()-time < 2000;){
-                        angleIntake.setPosition(armPositions[0][1]);
-                        telemetry.addData("Current angle position: ", angleIntake.getPosition());
-                        telemetry.update();
-                    }
-                    sleep(200);
-                    //for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
-                    sleep(200);
-                    //Moves the robot back to the starting position:
-                    TMM_With_Arm(900,0.3,0,0.0,false,0,MethodObj,armMethodObj);
-                    sleep(200);
-                    TMM_With_Arm(200,0,0,0.2,false,0,MethodObj,armMethodObj);
-                    sleep(300);
+                    break;
                 }
-                //Turns the robot back to the starting direction:
-                MethodObj.timedMotorMove(timeTurned,0.0,0,0.2,false);
-                sleep(400);
             }
-            //Runs if the object has not been found on both the center and left lines:
-            if (!found) {
-                marker = "right";
-                //Turns the robot to the right:
-                TMM_With_Arm(500,0.0,0,0.2,false,3,MethodObj,armMethodObj);
-                sleep(300);
+            //Moves to the left stripe and places down the pixel (Only runs if the object was found during the scanning period):
+            if (marker == "left") {
+                RMO.TMM_With_Arm(200, 0, 0, -0.2, false, 3);
                 //Moves the robot to the stripe:
-                TMM_With_Arm(900,-0.3,0,0.0,false,3,MethodObj,armMethodObj);
-                sleep(300);
+                RMO.TMM_With_Arm(900, -0.3, 0, 0.0, false, 3);
+                sleep(400);
                 //Deposits pixel on stripe (Intake System):
-                for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){
+                for (double time = runtime.milliseconds(); runtime.milliseconds() - time < 2000; ) {
                     angleIntake.setPosition(armPositions[3][1]);
-                    armMethodObj.setArmDegree((int)armPositions[3][0]);
+                    armRMO.setArmDegree((int) armPositions[3][0]);
                     wheelIntake.setPosition(0.1);
                     telemetry.addData("Current angle position: ", angleIntake.getPosition());
                     telemetry.update();
                 }
                 wheelIntake.setPosition(0.5);
-                for (double time = runtime.milliseconds(); runtime.milliseconds()-time < 2000;){
+                for (double time = runtime.milliseconds(); runtime.milliseconds() - time < 2000; ) {
                     angleIntake.setPosition(armPositions[0][1]);
                     telemetry.addData("Current angle position: ", angleIntake.getPosition());
                     telemetry.update();
@@ -240,63 +206,99 @@ public class LeftAutonomous extends LinearOpMode {
                 //for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
                 sleep(200);
                 //Moves the robot back to the starting position:
-                TMM_With_Arm(900,0.3,0,0.0,false,0,MethodObj,armMethodObj);
+                RMO.TMM_With_Arm(900, 0.3, 0, 0.0, false, 0);
                 sleep(200);
-                //Moves the robot back to the starting direction:
-                TMM_With_Arm(500,0.0,0,-0.2,false,0,MethodObj,armMethodObj);
-                sleep(200);
+                RMO.TMM_With_Arm(200, 0, 0, 0.2, false, 0);
+                sleep(300);
             }
-            //MethodObj.timedMotorMove(8000,0,0,0.3);
-            //(Left side edition) Goes from starting position to the board, puts the pixel on the board, and then parks in the parking area:
-            //WARNING, The following code will most likely hit the other alliance robot, do not run the code until a collision-prevention system has been set up:
+            //Turns the robot back to the starting direction:
+            RMO.timedMotorMove(timeTurned, 0.0, 0, 0.2, false);
+            sleep(400);
+        }
+        //Runs if the object has not been found on both the center and left lines:
+        if (!found) {
+            marker = "right";
+            //Turns the robot to the right:
+            RMO.TMM_With_Arm(500, 0.0, 0, 0.2, false, 3);
+            sleep(300);
+            //Moves the robot to the stripe:
+            RMO.TMM_With_Arm(900, -0.3, 0, 0.0, false, 3);
+            sleep(300);
+            //Deposits pixel on stripe (Intake System):
+            for (double time = runtime.milliseconds(); runtime.milliseconds() - time < 2000; ) {
+                angleIntake.setPosition(armPositions[3][1]);
+                armRMO.setArmDegree((int) armPositions[3][0]);
+                wheelIntake.setPosition(0.1);
+                telemetry.addData("Current angle position: ", angleIntake.getPosition());
+                telemetry.update();
+            }
+            wheelIntake.setPosition(0.5);
+            for (double time = runtime.milliseconds(); runtime.milliseconds() - time < 2000; ) {
+                angleIntake.setPosition(armPositions[0][1]);
+                telemetry.addData("Current angle position: ", angleIntake.getPosition());
+                telemetry.update();
+            }
+            sleep(200);
+            //for(double time = runtime.milliseconds(); runtime.milliseconds()-time<2000;){wheelIntake.setPosition(0.1);}
+            sleep(200);
+            //Moves the robot back to the starting position:
+            RMO.TMM_With_Arm(900, 0.3, 0, 0.0, false, 0);
+            sleep(200);
+            //Moves the robot back to the starting direction:
+            RMO.TMM_With_Arm(500, 0.0, 0, -0.2, false, 0);
+            sleep(200);
+        }
+        //RMO.timedMotorMove(8000,0,0,0.3);
+        //(Left side edition) Goes from starting position to the board, puts the pixel on the board, and then parks in the parking area:
+        //WARNING, The following code will most likely hit the other alliance robot, do not run the code until a collision-prevention system has been set up:
             /*
-            MethodObj.timedMotorMove(70,0.3,0,0);
+            RMO.timedMotorMove(70,0.3,0,0);
             sleep(200);
-            MethodObj.timedMotorMove(300,0,0,0.3);
+            RMO.timedMotorMove(300,0,0,0.3);
             sleep(200);
-            MethodObj.timedMotorMove(8000,0.3,0,0);
+            RMO.timedMotorMove(8000,0.3,0,0);
             sleep(200);
              */
             /*
-            MethodObj.timedMotorMove(70,0.3,0,0,true);
+            RMO.timedMotorMove(70,0.3,0,0,true);
             sleep(200);
-            MethodObj.timedMotorMove(300,0,0,0.3,true);
+            RMO.timedMotorMove(300,0,0,0.3,true);
             sleep(200);
-            MethodObj.timedMotorMove(6000,0.3,0,0,true);
+            RMO.timedMotorMove(6000,0.3,0,0,true);
             sleep(200);
-            MethodObj.timedMotorMove(300,0,0,-0.3,true);
+            RMO.timedMotorMove(300,0,0,-0.3,true);
             sleep(200);
-            if (marker == "right") {MethodObj.timedMotorMove(300, 0.3, 0, 0,true);}
-            else if (marker == "center"){MethodObj.timedMotorMove(400, 0.3, 0, 0,true);}
-            else{MethodObj.timedMotorMove(500, 0.3, 0, 0,true);}
+            if (marker == "right") {RMO.timedMotorMove(300, 0.3, 0, 0,true);}
+            else if (marker == "center"){RMO.timedMotorMove(400, 0.3, 0, 0,true);}
+            else{RMO.timedMotorMove(500, 0.3, 0, 0,true);}
             sleep(200);
-            MethodObj.timedMotorMove(300,0,0,0.3,true);
+            RMO.timedMotorMove(300,0,0,0.3,true);
             sleep(200);
-            //armMethodObj.intakeAuto(2);
+            //armRMO.intakeAuto(2);
             //wheelIntake.setPosition(0.9);
             sleep(200);
             //wheelIntake.setPosition(0.5);
             sleep(200);
-            //armMethodObj.intakeAuto(0);
-            MethodObj.timedMotorMove(300,0,0,0.3,true);
+            //armRMO.intakeAuto(0);
+            RMO.timedMotorMove(300,0,0,0.3,true);
             sleep(200);
-            MethodObj.timedMotorMove(500,0.3,0,0,true);
+            RMO.timedMotorMove(500,0.3,0,0,true);
             sleep(200);
-            MethodObj.timedMotorMove(300,0,0,-0.3,true);
+            RMO.timedMotorMove(300,0,0,-0.3,true);
             sleep(200);
-            MethodObj.timedMotorMove(200,0.3,0,0,true);
+            RMO.timedMotorMove(200,0.3,0,0,true);
             sleep(200);
              */
-            //Outputs information until the end of the Autonomous Period:
-            while (opModeIsActive()) {
-                telemetry.addData("First Distance: ", distance);
-                telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
-                telemetry.addData("Object at side: ", marker);
-                telemetry.update();
-            }
+        //Outputs information until the end of the Autonomous Period:
+        while (opModeIsActive()) {
+            telemetry.addData("First Distance: ", distance);
+            telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
+            telemetry.addData("Object at side: ", marker);
+            telemetry.update();
+        }
         //Code that was used previously, but has either been replaced or turned into a method:
         /*
-        MethodObj.setArmDegree(0);
+        RMO.setArmDegree(0);
         angleIntake.setPosition(0.9);
         sleep(2);
         telemetry.addData("a","aaaaaaa");
@@ -306,24 +308,11 @@ public class LeftAutonomous extends LinearOpMode {
         /*
         Turns the robot back to the center:
         for(double turnback = runtime.milliseconds(); (runtime.milliseconds()+1000)-turnback<turnback;){
-            MethodObj.move(0, 0, 0.2);
+            RMO.move(0, 0, 0.2);
             telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
             telemetry.update();
         }
-        MethodObj.move(0,0,0);
+        RMO.move(0,0,0);
          */
-    }
-    private void TMM_With_Arm(double time, double axial, double lateral, double yaw, boolean sensor, int position, MotorMethods motorMethodObject, ArmMethods armMethodObject){
-        double[][] armPositions = {{0,0.9},{0,0.4},{170,0.95},{20,0.32}};
-        MotorMethods MethodObj = motorMethodObject;
-        ArmMethods armMethodObj = armMethodObject;
-        for (double startTime = runtime.milliseconds(); runtime.milliseconds()-startTime<time && opModeIsActive();){
-            MethodObj.move(axial,lateral,yaw);
-            if (position != 1){
-                angleIntake.setPosition(armPositions[position][1]);
-                armMethodObj.setArmDegree((int) armPositions[position][0]);
-            }
-        }
-        MethodObj.move(0,0,0);
     }
 }

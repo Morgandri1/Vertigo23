@@ -118,10 +118,10 @@ public class OmniDriveMod extends LinearOpMode {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "BL");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "FR");
         rightBackDrive = hardwareMap.get(DcMotor.class, "BR");
-        MotorMethods MethodObj = new MotorMethods(hardwareMap);
-        MethodObj.SetDirectionForward();
+        RobotMethods RMO = new RobotMethods(hardwareMap);
+        RMO.SetDirectionForward();
 
-        MethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
+        RMO.setZeroBehaviorAll();
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
         // ########################################################################################
@@ -132,7 +132,7 @@ public class OmniDriveMod extends LinearOpMode {
         // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.
         // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
-        //MethodObj.SetDirectionForward();
+        //RMO.SetDirectionForward();
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -149,15 +149,15 @@ public class OmniDriveMod extends LinearOpMode {
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral =  gamepad1.left_stick_x;
             double yaw     =  gamepad1.right_stick_x;
-            MethodObj.move(axial,lateral,yaw);
+            RMO.move(axial,lateral,yaw);
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            //MethodObj.CalcPower();
+            //RMO.CalcPower();
 
-            double leftFrontPower = MethodObj.ReturnLF();
-            double leftBackPower = MethodObj.ReturnLB();
-            double rightFrontPower = MethodObj.ReturnRF();
-            double rightBackPower = MethodObj.ReturnRB();
+            double leftFrontPower = RMO.ReturnLF();
+            double leftBackPower = RMO.ReturnLB();
+            double rightFrontPower = RMO.ReturnRF();
+            double rightBackPower = RMO.ReturnRB();
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
 
@@ -180,8 +180,8 @@ public class OmniDriveMod extends LinearOpMode {
             */
 
             // Send calculated power to wheels
-            //MethodObj.MotorSetPower();
-            //MethodObj.Turn(0.0,0.0,1.0);
+            //RMO.MotorSetPower();
+            //RMO.Turn(0.0,0.0,1.0);
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);

@@ -13,23 +13,10 @@ public class allTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         //Variable declaration, initialization, and instantiation:
-        DcMotor leftFrontDrive;
-        DcMotor leftBackDrive;
-        DcMotor rightFrontDrive;
-        DcMotor rightBackDrive;
-        DcMotor armMotor;
-        Servo wheelIntake;
-        Servo angleIntake;
-        DistanceSensor distanceSensor;
-        armMotor = hardwareMap.get(DcMotor.class,"am1");
-        wheelIntake = hardwareMap.get(Servo.class,"servowheel");
-        angleIntake = hardwareMap.get(Servo.class,"servoangle");
-        distanceSensor = hardwareMap.get(DistanceSensor.class,"DS");
         ElapsedTime runtime = new ElapsedTime();
-        ArmMethods AMO = new ArmMethods(hardwareMap);
-        MotorMethods MMO = new MotorMethods(hardwareMap);
-        MMO.SetDirectionBackwards();
-        MMO.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
+        RobotMethods RMO = new RobotMethods(hardwareMap);
+        RMO.SetDirectionBackwards();
+        RMO.setZeroBehaviorAll();
         double axial = 0.0;
         double lateral = 0.0;
         double yaw = 0.0;
@@ -40,7 +27,7 @@ public class allTest extends LinearOpMode {
         double currentPos = 0.0;
         double motorOffset = 0.0;
         final double startingDegree = 0.8;
-        //Array for armmotor and angleIntake for positions 0-3:
+        //Array for arRMOtor and angleIntake for positions 0-3:
         //Position 0, have the correct positions:
         double[][] armPositions = {{0,startingDegree},{0,0.4},{170,0.96},{25,0.15}};
         final int SET_ARM_MOTOR = 0;
@@ -53,7 +40,7 @@ public class allTest extends LinearOpMode {
             if (gamepad1.back || gamepad2.back){terminateOpModeNow();}
             //Pressing start will stop the robot and cease any other functions:
             while(gamepad1.start || gamepad2.start) {
-                MMO.move(0,0,0);
+                RMO.move(0,0,0);
             }
             if (gamepad2.dpad_right){
                 motorOffset = 0;
@@ -76,9 +63,9 @@ public class allTest extends LinearOpMode {
             else if (gamepad2.y) {
                 changePos = 3;
             }
-            if (gamepad2.right_bumper){wheelIntake.setPosition(0.9);}
-            else if (gamepad2.left_bumper){wheelIntake.setPosition(0.1);}
-            else{wheelIntake.setPosition(0.5);}
+            if (gamepad2.right_bumper){RMO.wheelIntake.setPosition(0.9);}
+            else if (gamepad2.left_bumper){RMO.wheelIntake.setPosition(0.1);}
+            else{RMO.wheelIntake.setPosition(0.5);}
             if (gamepad2.right_trigger > 0.2f){motorOffset -= 0.5;}
             if (gamepad2.left_trigger > 0.2f){motorOffset += 0.5;}
             axial = driveMultiplier * (-gamepad1.left_stick_y);  // Note: pushing stick forward gives negative value
@@ -91,19 +78,19 @@ public class allTest extends LinearOpMode {
             else if (gamepad2.right_stick_y > 0.2f){continuousOffset += 0.003;}
             //SET_ARM_MOTOR and SET_ARM_SERVO are constant variables set at the beginning of runOpMode()
             if (changePos != -1) {
-                angleIntake.setPosition(armPositions[changePos][SET_ARM_SERVO] + stickOffset + continuousOffset);
-                AMO.setArmDegree((int) armPositions[changePos][SET_ARM_MOTOR] + (int) Math.floor(motorOffset));
+                RMO.angleIntake.setPosition(armPositions[changePos][SET_ARM_SERVO] + stickOffset + continuousOffset);
+                RMO.setArmDegree((int) armPositions[changePos][SET_ARM_MOTOR] + (int) Math.floor(motorOffset));
                 currentPos = armPositions[changePos][SET_ARM_SERVO] + stickOffset + continuousOffset;
             }
             if (gamepad1.left_trigger > 0.1f){driveMultiplier = 0.25;}
             else if (gamepad1.right_trigger > 0.1f){driveMultiplier = 1;}
             else{driveMultiplier = 0.5;}
-            MMO.move(axial,lateral,yaw);
-            telemetry.addData("Current arm motor position: ", AMO.getArmDegree());
-            telemetry.addData("Current arm servo position: ", angleIntake.getPosition());
+            RMO.move(axial,lateral,yaw);
+            telemetry.addData("Current arm motor position: ", RMO.getArmDegree());
+            telemetry.addData("Current arm servo position: ", RMO.angleIntake.getPosition());
             telemetry.addData("Current arm servo position with var: ", currentPos);
-            telemetry.addData("Current wheel position: ", wheelIntake.getPosition());
-            telemetry.addData("Current centimeters from distance sensor: ", distanceSensor.getDistance(DistanceUnit.CM));
+            telemetry.addData("Current wheel position: ", RMO.wheelIntake.getPosition());
+            telemetry.addData("Current centimeters from distance sensor: ", RMO.distanceSensor.getDistance(DistanceUnit.CM));
             telemetry.addData("Current continuous offset: ", continuousOffset);
             telemetry.addData("Current stick offset", stickOffset);
             telemetry.addData("Current moto offset", motorOffset);

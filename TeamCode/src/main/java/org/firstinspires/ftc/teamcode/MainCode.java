@@ -134,10 +134,9 @@ public class MainCode extends LinearOpMode {
         distanceSensor = hardwareMap.get(DistanceSensor.class, "DS");
         //droneServo = hardwareMap.get(Servo.class, "servodrone");
         //linearMotor = hardwareMap.get(DcMotor.class, "am2");
-        MotorMethods MotorMethodObj = new MotorMethods(hardwareMap);
-        ArmMethods armMethodObj = new ArmMethods(hardwareMap);
-        MotorMethodObj.SetDirectionBackwards();
-        MotorMethodObj.setZeroBehaviorAll(DcMotor.ZeroPowerBehavior.BRAKE);
+        RobotMethods RMO = new RobotMethods(hardwareMap);
+        RMO.SetDirectionBackwards();
+        RMO.setZeroBehaviorAll();
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
         // ########################################################################################
@@ -174,7 +173,7 @@ public class MainCode extends LinearOpMode {
             axial = driveMultiplier * (-gamepad1.left_stick_y);  // Note: pushing stick forward gives negative value
             lateral = driveMultiplier * (gamepad1.left_stick_x);
             yaw = driveMultiplier * (-gamepad1.right_stick_x);
-            MotorMethodObj.move(axial, lateral, yaw);
+            RMO.move(axial, lateral, yaw);
 
             //arm movement and initialization
             if (!gamepad2.left_bumper) {
@@ -193,27 +192,27 @@ public class MainCode extends LinearOpMode {
             }
             //determines the angle for the arm based on the controller
             int gamepadArmInput = (Math.round(armMovementArea * (-gamepad2.right_stick_y)));
-            double servoPosition = 100 - Math.round(armMethodObj.getArmDegree());
+            double servoPosition = 100 - Math.round(RMO.getArmDegree());
             telemetry.addData("input", gamepadArmInput);
             //moves the arm and tilts the intake to the correct position
             if (armStage == active) {
                 //Takes the input of the right stick y, and brings the arm and intake system to that value:
                 if (gamepadArmInput >= 0) {
-                    armMethodObj.setArmDegree(gamepadArmInput);
+                    RMO.setArmDegree(gamepadArmInput);
                     angleIntake.setPosition((servoPosition / 100) - 0.1);
                     telemetry.addData("servo pos", (servoPosition / 100) - 0.1);
                 } else {
-                    armMethodObj.setArmDegree(0);
+                    RMO.setArmDegree(0);
                     angleIntake.setPosition(0);
                 }
                 //Sets the arm and intake system on the ground in front of the robot:
             } else if (armStage == idle) {
-                armMethodObj.setArmDegree(defaultDegreesFromStart);
+                RMO.setArmDegree(defaultDegreesFromStart);
                 angleIntake.setPosition(servoPosition / 100);
             }
             //Sets the arm and intake system back to the default position:
             else {
-                armMethodObj.setArmDegree(0);
+                RMO.setArmDegree(0);
                 telemetry.addData("Degree 0 ", armMotor.getCurrentPosition());
                 angleIntake.setPosition(0.03);
             }
@@ -242,24 +241,24 @@ public class MainCode extends LinearOpMode {
             //Variable armStage is not used in the code below currently, it might be used in the future to be compatible with the original arm code
             //Full forward (for pixel intake)
             if (gamepad2.y) {
-                armMethodObj.intakeAuto(1, 3000);
+                RMO.intakeAuto(1, 3000);
             }
             //Upright
             if (gamepad2.x || gamepad2.dpad_up) {
-                armMethodObj.intakeAuto(2, 3000);
+                RMO.intakeAuto(2, 3000);
                 sleep(200);
             }
             //Resting
             if (gamepad2.a) {
-                armMethodObj.intakeAuto(0, 3000);
+                RMO.intakeAuto(0, 3000);
             }
             //TBD
             if(gamepad2.b){
-                armMethodObj.intakeAuto(3,3000);
+                RMO.intakeAuto(3,3000);
             }
             //Sends data to the driver:
             telemetry.addData("Armstage", armStage);
-            telemetry.addData("arm position", armMethodObj.getArmDegree());
+            telemetry.addData("arm position", RMO.getArmDegree());
             telemetry.addData("servo position", angleIntake.getPosition());
             telemetry.update();
         }
