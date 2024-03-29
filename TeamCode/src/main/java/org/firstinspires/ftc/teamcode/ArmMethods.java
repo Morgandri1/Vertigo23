@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+//NOTE: Use RobotMethods class instead of this one, thank you!
 public class ArmMethods extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();
     public DcMotor armMotor;

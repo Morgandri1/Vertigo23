@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import android.content.Context;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
+//NOTE: Use RobotMethods class instead of this one, thank you!
 class MotorMethods{
     private ElapsedTime runtime = new ElapsedTime();
     public DcMotor leftFrontDrive;
